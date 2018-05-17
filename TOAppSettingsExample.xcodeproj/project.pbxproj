@@ -13,6 +13,8 @@
 		22BF2400209FE58600416EC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22BF23FF209FE58600416EC4 /* Assets.xcassets */; };
 		22BF2403209FE58600416EC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22BF2401209FE58600416EC4 /* LaunchScreen.storyboard */; };
 		22BF2406209FE58600416EC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF2405209FE58600416EC4 /* main.m */; };
+		22BF240F209FE9C100416EC4 /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
+		22ED797220AC7BB700727598 /* MyAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ED797120AC7BB700727598 /* MyAppSettings.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,11 @@
 		22BF2402209FE58600416EC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		22BF2404209FE58600416EC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22BF2405209FE58600416EC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		22BF240D209FE9C100416EC4 /* TOAppSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOAppSettings.h; sourceTree = "<group>"; };
+		22BF240E209FE9C100416EC4 /* TOAppSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOAppSettings.m; sourceTree = "<group>"; };
+		22ED797020AC7BB700727598 /* MyAppSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyAppSettings.h; sourceTree = "<group>"; };
+		22ED797120AC7BB700727598 /* MyAppSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyAppSettings.m; sourceTree = "<group>"; };
+		22ED797320AC7F7000727598 /* TOAppSettingsExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TOAppSettingsExample.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +49,7 @@
 		22BF23EA209FE58500416EC4 = {
 			isa = PBXGroup;
 			children = (
+				22BF240C209FE9B100416EC4 /* TOAppSettings */,
 				22BF23F5209FE58500416EC4 /* TOAppSettingsExample */,
 				22BF23F4209FE58500416EC4 /* Products */,
 			);
@@ -58,6 +66,9 @@
 		22BF23F5209FE58500416EC4 /* TOAppSettingsExample */ = {
 			isa = PBXGroup;
 			children = (
+				22ED797320AC7F7000727598 /* TOAppSettingsExample.entitlements */,
+				22ED797020AC7BB700727598 /* MyAppSettings.h */,
+				22ED797120AC7BB700727598 /* MyAppSettings.m */,
 				22BF23F6209FE58500416EC4 /* AppDelegate.h */,
 				22BF23F7209FE58500416EC4 /* AppDelegate.m */,
 				22BF23F9209FE58500416EC4 /* ViewController.h */,
@@ -69,6 +80,15 @@
 				22BF2405209FE58600416EC4 /* main.m */,
 			);
 			path = TOAppSettingsExample;
+			sourceTree = "<group>";
+		};
+		22BF240C209FE9B100416EC4 /* TOAppSettings */ = {
+			isa = PBXGroup;
+			children = (
+				22BF240D209FE9C100416EC4 /* TOAppSettings.h */,
+				22BF240E209FE9C100416EC4 /* TOAppSettings.m */,
+			);
+			path = TOAppSettings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,6 +122,11 @@
 				TargetAttributes = {
 					22BF23F2209FE58500416EC4 = {
 						CreatedOnToolsVersion = 9.3;
+						SystemCapabilities = {
+							com.apple.iCloud = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -143,7 +168,9 @@
 			files = (
 				22BF23FB209FE58500416EC4 /* ViewController.m in Sources */,
 				22BF2406209FE58600416EC4 /* main.m in Sources */,
+				22ED797220AC7BB700727598 /* MyAppSettings.m in Sources */,
 				22BF23F8209FE58500416EC4 /* AppDelegate.m in Sources */,
+				22BF240F209FE9C100416EC4 /* TOAppSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
