@@ -11,8 +11,12 @@
 
 @interface MyAppSettings : TOAppSettings
 
+@property (nonatomic, assign) BOOL boolProperty;
 @property (nonatomic, assign) NSInteger integerProperty;
 @property (nonatomic, assign) CGFloat floatProperty;
-@property (nonatomic, assign) BOOL boolProperty;
+@property (nonatomic, copy) NSDate *dateProperty;
+@property (nonatomic, copy) NSURL *urlProperty;
+@property (nonatomic, copy) NSArray<NSString *> *arrayProperty;
+@property (nonatomic, copy) NSDictionary<NSString *, NSString *> *dictionaryProperty;
 
 @end
