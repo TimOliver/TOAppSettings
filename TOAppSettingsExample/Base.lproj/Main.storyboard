@@ -299,11 +299,5 @@
         <namedColor name="ValueTextColor">
             <color red="0.39300000667572021" green="0.39300000667572021" blue="0.39300000667572021" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <namedColor name="ValueTextColor">
-            <color red="0.39300000667572021" green="0.39300000667572021" blue="0.39300000667572021" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
-        <namedColor name="ValueTextColor">
-            <color red="0.39300000670000002" green="0.39300000670000002" blue="0.39300000670000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
     </resources>
 </document>
