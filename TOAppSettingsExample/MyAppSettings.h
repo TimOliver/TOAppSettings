@@ -11,7 +11,7 @@
 @interface MyAppSettings : TOAppSettings
 
 @property (nonatomic, assign) BOOL boolProperty;
-@property (nonatomic, assign) int integerProperty;
+@property (nonatomic, assign) NSInteger integerProperty;
 @property (nonatomic, assign) float floatProperty;
 @property (nonatomic, assign) double doubleProperty;
 @property (nonatomic, copy) NSString *stringProperty;
@@ -20,6 +20,7 @@
 @property (nonatomic, copy) NSArray<NSString *> *arrayProperty;
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> *dictionaryProperty;
 @property (nonatomic, strong) id<NSCoding> object;
+@property (nonatomic, strong) id<NSSecureCoding> secureObject;
 
 @property (nonatomic, readonly) NSString *readOnlyString;
 
