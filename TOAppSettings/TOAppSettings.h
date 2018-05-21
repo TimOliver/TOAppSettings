@@ -8,6 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface TOAppSettings : NSObject
 
+/**
+ Override this method with an array of any property names
+ that you do NOT wish to have persisted.
+ */
++ (nullable NSArray<NSString *> *)ignoredProperties;
+
+/**
+ Override this method with any initial values that should
+ be set when loaded for the first time.
+ */
++ (nullable NSDictionary *)defaultPropertyValues;
+
 @end
+
+NS_ASSUME_NONNULL_END
