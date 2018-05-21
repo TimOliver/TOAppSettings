@@ -12,7 +12,6 @@
 typedef NS_ENUM (NSInteger, TOAppSettingsDataType) {
     TOAppSettingsDataTypeUnknown,
     TOAppSettingsDataTypeInt,
-    TOAppSettingsDataTypeLong,
     TOAppSettingsDataTypeFloat,
     TOAppSettingsDataTypeDouble,
     TOAppSettingsDataTypeBool,
@@ -24,7 +23,9 @@ typedef NS_ENUM (NSInteger, TOAppSettingsDataType) {
 
 // ---
 
-static inline TOAppSettingsDataType TOAppSettingsDataTypeForPropertyAttributes(const char *attributes)
+#pragma mark - Property Accessor Analysis -
+
+static inline TOAppSettingsDataType TOAppSettingsDataTypeForProperty(const char *attributes)
 {
     if (!attributes || strlen(attributes) == 0) { return TOAppSettingsDataTypeUnknown; }
     
@@ -32,9 +33,8 @@ static inline TOAppSettingsDataType TOAppSettingsDataTypeForPropertyAttributes(c
     char propertyType = attributes[1];
     
     switch (propertyType) {
-        case 'i': return TOAppSettingsDataTypeInt;
+        case 'q': return TOAppSettingsDataTypeInt;
         case 'd': return TOAppSettingsDataTypeDouble;
-        case 'l': return TOAppSettingsDataTypeLong;
         case 'f': return TOAppSettingsDataTypeFloat;
         case 'B': return TOAppSettingsDataTypeBool;
         default: break;
@@ -43,6 +43,7 @@ static inline TOAppSettingsDataType TOAppSettingsDataTypeForPropertyAttributes(c
     // Objects are represented as 'T@"ClassName"', so filter for supported types
     if (propertyType != '@') { return TOAppSettingsDataTypeUnknown; }
     
+    // Filter for specific types of objects we support
     if (strncmp(attributes + 3, "NSString", 8) == 0) {
         return TOAppSettingsDataTypeString;
     }
@@ -53,7 +54,47 @@ static inline TOAppSettingsDataType TOAppSettingsDataTypeForPropertyAttributes(c
         return TOAppSettingsDataTypeDictionary;
     }
     
+    // Return generic object
     return TOAppSettingsDataTypeObject;
+}
+
+static inline BOOL TOAppSettingsIsIgnoredProperty(const char *attributes)
+{
+    // Read-only classes are represented by a 'R' after the first comma
+    if (strncmp(strchr(attributes, ',') + 1, "R", 1) == 0) {
+        return YES;
+    }
+    return NO;
+}
+
+static inline BOOL TOAppSettingsIsCompatibleObjectType(const char *attributes)
+{
+    //Format is either '"'T@\"NSString\"" or '"T@\"<NSCoding>\""'
+    if (strlen(attributes) < 2 || attributes[1] != '@') { return NO; }
+    
+    // Get the class/protocol name
+    const char *start = strstr(attributes, "\"") + 1;
+    const char *end = strstr(start, "\"");
+    long distance = (end - start);
+    
+    char *name = malloc(distance);
+    strncpy(name, start, distance);
+    
+    // Check if it is a generic object that conforms to the coding protocols
+    if (strcmp(name, "<NSCoding>") == 0 || strcmp(name, "<NSSecureCoding>") == 0) {
+        free(name);
+        return YES;
+    }
+    
+    // If it's an object type, see if we can check if it conforms to a protocol we support
+    Class class = NSClassFromString([NSString stringWithCString:name encoding:NSUTF8StringEncoding]);
+    free(name);
+    
+    if ([class conformsToProtocol:@protocol(NSCoding)]) {
+        return YES;
+    }
+
+    return NO;
 }
 
 /*
@@ -67,10 +108,140 @@ static inline BOOL TOAppSettingsIsSubclass(Class class1, Class class2) {
     return NO;
 }
 
+#pragma mark - Accessor Implementations -
+
+// Int
+static void setIntegerPropertyValue(id self, SEL _cmd, NSInteger intValue) {  }
+static NSInteger getIntegerPropertyValue(id self, SEL _cmd) { return 1; }
+
+// Float
+static void setFloatPropertyValue(id self, SEL _cmd, float floatValue) { }
+static float getFloatPropertyValue(id self, SEL _cmd) { return 1.0f; }
+
+//Double
+static void setDoublePropertyValue(id self, SEL _cmd, double doubleValue) { }
+static double getDoublePropertyValue(id self, SEL _cmd) { return 1.0f; }
+
+//Bool
+static void setBoolPropertyValue(id self, SEL _cmd, BOOL boolValue) { }
+static BOOL getBoolPropertyValue(id self, SEL _cmd) { return NO; }
+
+//String
+static void setStringPropertyValue(id self, SEL _cmd, NSString *stringValue) { }
+static NSString *getStringPropertyValue(id self, SEL _cmd) { return @""; }
+
+//Array
+static void setArrayPropertyValue(id self, SEL _cmd, NSArray *arrayValue) { }
+static NSArray *getArrayPropertyValue(id self, SEL _cmd) { return nil; }
+
+//Dictionary
+static void setDictionaryPropertyValue(id self, SEL _cmd, NSDictionary *dictionarrValue) { }
+static NSDictionary *getDictionaryPropertyValue(id self, SEL _cmd) { return nil; }
+
+//Object
+static void setObjectPropertyValue(id self, SEL _cmd, id object)
+{
+    
+}
+
+static id getObjectPropertyValue(id self, SEL _cmd)
+{
+    return nil;
+}
+
+static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, const char *attributes, TOAppSettingsDataType type)
+{
+    IMP newGetter = NULL;
+    IMP newSetter = NULL;
+    
+    switch (type) {
+        case TOAppSettingsDataTypeInt:
+            newGetter = (IMP)getIntegerPropertyValue;
+            newSetter = (IMP)setIntegerPropertyValue;
+            break;
+        case TOAppSettingsDataTypeFloat:
+            newGetter = (IMP)getFloatPropertyValue;
+            newSetter = (IMP)setFloatPropertyValue;
+            break;
+        case TOAppSettingsDataTypeDouble:
+            newGetter = (IMP)getDoublePropertyValue;
+            newSetter = (IMP)setDoublePropertyValue;
+            break;
+        case TOAppSettingsDataTypeBool:
+            newGetter = (IMP)getBoolPropertyValue;
+            newSetter = (IMP)setBoolPropertyValue;
+            break;
+        case TOAppSettingsDataTypeString:
+            newGetter = (IMP)getStringPropertyValue;
+            newSetter = (IMP)setStringPropertyValue;
+            break;
+        case TOAppSettingsDataTypeArray:
+            newGetter = (IMP)getArrayPropertyValue;
+            newSetter = (IMP)setArrayPropertyValue;
+            break;
+        case TOAppSettingsDataTypeDictionary:
+            newGetter = (IMP)getDictionaryPropertyValue;
+            newSetter = (IMP)setDictionaryPropertyValue;
+            break;
+        case TOAppSettingsDataTypeObject:
+            newGetter = (IMP)getObjectPropertyValue;
+            newSetter = (IMP)setObjectPropertyValue;
+            break;
+        default:
+            break;
+    }
+    
+    if (newGetter == NULL || newSetter == NULL) { return; }
+    
+    // Generate synthesized setter method name
+    NSString *setterName = [NSString stringWithFormat:@"set%@%@:", [[name substringToIndex:1] capitalizedString], [name substringFromIndex:1]];
+    
+    SEL originalGetter = NSSelectorFromString(name);
+    SEL originalSetter = NSSelectorFromString(setterName);
+    
+    class_replaceMethod(class, originalGetter, newGetter, attributes);
+    class_replaceMethod(class, originalSetter, newSetter, attributes);
+}
+
+static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
+{
+    // Get a list of all of the ignored properties defined by this subclass
+    NSArray *ignoredProperties = [class ignoredProperties];
+    
+    // Get all properties in this class
+    unsigned int propertyCount;
+    objc_property_t *properties = class_copyPropertyList(class, &propertyCount);
+    
+    // Loop through each property
+    for (NSInteger i = 0; i < propertyCount; i++) {
+        // Get the property from the class
+        objc_property_t property = properties[i];
+        
+        // Check if the property is read-only
+        const char *attributes = property_getAttributes(property);
+        if (TOAppSettingsIsIgnoredProperty(attributes)) { continue; }
+        
+        // Get the type of this property
+        TOAppSettingsDataType type = TOAppSettingsDataTypeForProperty(attributes);
+        if (type == TOAppSettingsDataTypeUnknown) { continue; }
+        
+        // Get the name and check if it was explicitly ignored
+        NSString *name = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
+        if (ignoredProperties.count && [ignoredProperties indexOfObject:name] != NSNotFound) { continue; }
+        
+        // Check if it's an object type we can support
+        if (TOAppSettingsIsCompatibleObjectType(attributes) == NO) { continue; }
+        
+        // Perform the method swap
+        TOAppSettingsReplaceAccessors(class, name, attributes, type);
+    }
+    free(properties);
+}
+
 /*
- Get a C array of all of the classes visible to this executable.
- The array must be manually freed when finished.
- */
+Get a C array of all of the classes visible to this executable.
+The array must be manually freed when finished.
+*/
 static inline Class *TOAppSettingsGetClassList(unsigned int *numClasses)
 {
     unsigned int _numClasses = 0;
@@ -94,30 +265,7 @@ static inline Class *TOAppSettingsGetClassList(unsigned int *numClasses)
     return _classes;
 }
 
-static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
-{
-    unsigned int propertyCount;
-    objc_property_t *properties = class_copyPropertyList(class, &propertyCount);
-    for(NSInteger i = 0; i < propertyCount; i++) {
-        objc_property_t property = properties[i];
-        const char *name = property_getName(property);
-        const char *attributes = property_getAttributes(property);
-        
-        printf("%s %s %li\n", name, attributes, (long)TOAppSettingsDataTypeForPropertyAttributes(attributes));
-    }
-    free(properties);
-}
-
-// -----------------------------------------------------------------------
-
-@implementation TOAppSettings
-
-+ (void)load
-{
-    [[self class] registerSubclasses];
-}
-
-+ (void)registerSubclasses
+static inline void TOAppSettingsRegisterSubclassProperties()
 {
     // Get a list of all classes
     unsigned int numClasses = 0;
@@ -133,6 +281,24 @@ static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
     }
     free(classes);
 }
+
+// -----------------------------------------------------------------------
+
+@implementation TOAppSettings
+
+#pragma mark - Class Entry -
+
++ (void)load
+{
+    @autoreleasepool {
+        TOAppSettingsRegisterSubclassProperties();
+    }
+}
+
+#pragma mark - Subclass Overridable -
+
++ (nullable NSArray *)ignoredProperties { return nil; }
++ (nullable NSDictionary *)defaultPropertyValues { return nil; }
 
 @end
 
