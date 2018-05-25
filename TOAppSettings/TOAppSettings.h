@@ -12,6 +12,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TOAppSettings : NSObject
 
++ (TOAppSettings *)defaultSettings;
+
++ (TOAppSettings *)settingsWithIdentifier:(NSString *)identifier;
+
++ (TOAppSettings *)defaultSettingsWithSuiteName:(NSString *)suiteName;
+
++ (TOAppSettings *)settingsWithIdentifier:(NSString *)identifier suiteName:(NSString *)suiteName;
+
+/**
+ Init is disabled. Please use one of the above creation methods
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
 /**
  Override this method with an array of any property names
  that you do NOT wish to have persisted.

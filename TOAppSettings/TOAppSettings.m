@@ -7,19 +7,9 @@
 //
 
 #import "TOAppSettings.h"
-#import <objc/runtime.h>
+#import "TOAppSettingsProperty.h"
 
-typedef NS_ENUM (NSInteger, TOAppSettingsDataType) {
-    TOAppSettingsDataTypeUnknown,
-    TOAppSettingsDataTypeInt,
-    TOAppSettingsDataTypeFloat,
-    TOAppSettingsDataTypeDouble,
-    TOAppSettingsDataTypeBool,
-    TOAppSettingsDataTypeString,
-    TOAppSettingsDataTypeArray,
-    TOAppSettingsDataTypeDictionary,
-    TOAppSettingsDataTypeObject
-};
+#import <objc/runtime.h>
 
 // ---
 
@@ -293,6 +283,16 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     @autoreleasepool {
         TOAppSettingsRegisterSubclassProperties();
     }
+}
+
++ (NSMutableDictionary *)sharedSchema
+{
+    static dispatch_once_t onceToken;
+    static NSMutableDictionary *_schema;
+    dispatch_once(&onceToken, ^{
+        _schema = [NSMutableDictionary dictionary];
+    });
+    return _schema;
 }
 
 #pragma mark - Subclass Overridable -
