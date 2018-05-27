@@ -189,8 +189,22 @@ static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, co
     SEL originalGetter = NSSelectorFromString(name);
     SEL originalSetter = NSSelectorFromString(setterName);
     
-    class_replaceMethod(class, originalGetter, newGetter, attributes);
-    class_replaceMethod(class, originalSetter, newSetter, attributes);
+    // If the class already has that selector, replace it.
+    // Otherwise, add as a new method
+    if ([class instancesRespondToSelector:originalGetter]) {
+        class_replaceMethod(class, originalGetter, newGetter, attributes);
+    }
+    else {
+        class_addMethod(class, originalGetter, newGetter, attributes);
+    }
+    
+    // Repeat for setter
+    if ([class instancesRespondToSelector:originalSetter]) {
+        class_replaceMethod(class, originalSetter, newSetter, attributes);
+    }
+    else {
+        class_addMethod(class, originalSetter, newSetter, attributes);
+    }
 }
 
 static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
@@ -220,7 +234,8 @@ static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
         if (ignoredProperties.count && [ignoredProperties indexOfObject:name] != NSNotFound) { continue; }
         
         // Check if it's an object type we can support
-        if (TOAppSettingsIsCompatibleObjectType(attributes) == NO) { continue; }
+        if (type == TOAppSettingsDataTypeObject &&
+            TOAppSettingsIsCompatibleObjectType(attributes) == NO) { continue; }
         
         // Perform the method swap
         TOAppSettingsReplaceAccessors(class, name, attributes, type);
@@ -274,9 +289,123 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 // -----------------------------------------------------------------------
 
+@interface TOAppSettings ()
+
+/** The user defaults that this class writes to */
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
+
+/** Internal redeclarations of the objects configuration */
+@property (nonatomic, copy, readwrite) NSString *identifier;
+@property (nonatomic, copy, readwrite) NSString *suiteName;
+
+/** When saved to the user defaults, every property name is
+ formatted with this string as a prefix. This ensures zero collisions
+ with any other settings managed by external code. */
+@property (nonatomic, copy) NSString *propertyKeyPrefix;
+
+@end
+
+// -----------------------------------------------------------------------
+
 @implementation TOAppSettings
 
-#pragma mark - Class Entry -
+#pragma mark - Singleton Properties -
+
+/** A cache where previously created instances of the same
+    settings is persisted. */
++ (NSCache *)sharedCache
+{
+    static NSCache *_cache;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _cache = [[NSCache alloc] init];
+    });
+    return _cache;
+}
+
+/** Manages a dispatch queue that ensures the cache is
+    accessed in a thread-safe manner */
+ + (dispatch_queue_t)sharedSettingsCacheQueue
+ {
+     static dispatch_queue_t _sharedSettingsQueue;
+     static dispatch_once_t onceToken;
+     dispatch_once(&onceToken, ^{
+         _sharedSettingsQueue = dispatch_queue_create("TOAppSettings.SharedSettingsBarrierQueue",
+                                                      DISPATCH_QUEUE_CONCURRENT);
+     });
+     return _sharedSettingsQueue;
+ }
+
+#pragma mark - Class Creation -
++ (instancetype)defaultSettings
+{
+    return [[self class] settingsWithIdentifier:nil suiteName:nil];
+}
+
++ (instancetype)defaultSettingsWithSuiteName:(NSString *)suiteName
+{
+    return [[self class] settingsWithIdentifier:nil suiteName:suiteName];
+}
+
++ (instancetype)settingsWithIdentifier:(NSString *)identifier
+{
+    return [[self class] settingsWithIdentifier:identifier suiteName:nil];
+}
+
++ (instancetype)settingsWithIdentifier:(NSString *)identifier suiteName:(NSString *)suiteName
+{
+    NSString *instanceKeyName = [[self class] instanceKeyNameWithIdentifier:identifier];
+    dispatch_queue_t barrierQueue = [TOAppSettings sharedSettingsCacheQueue];
+    
+    // Retrieve the previous instance from the cache
+    __block id settingsObject = nil;
+    dispatch_sync(barrierQueue, ^{
+        settingsObject = [[TOAppSettings sharedCache] objectForKey:instanceKeyName];
+    });
+    
+    // Return the previous instance
+    if (settingsObject) { return settingsObject; }
+    
+    // Create a new instance and cache it
+    settingsObject = [[self alloc] initWithIdentifier:identifier suiteName:suiteName];
+    
+    // Save the instance to the cache
+    dispatch_barrier_async(barrierQueue, ^{
+        [[TOAppSettings sharedCache] setObject:settingsObject forKey:instanceKeyName];
+    });
+    
+    return settingsObject;
+}
+
+- (instancetype)initWithIdentifier:(nullable NSString *)identifier suiteName:(nullable NSString *)suiteName
+{
+    if (self = [super init]) {
+        _suiteName = suiteName;
+        _identifier = identifier;
+        
+        [self setUp];
+    }
+    
+    return self;
+}
+
+- (void)setUp
+{
+    // Work out which NSUserDefaults we'll be targetting
+    if (self.suiteName) {
+        self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:self.suiteName];
+    }
+    else {
+        self.userDefaults = [NSUserDefaults standardUserDefaults];
+    }
+    
+    // Generate the property prefix we'll be
+    // using to uniquely identify the properties we manage
+    self.propertyKeyPrefix = [[self class] instanceKeyNameWithIdentifier:_identifier];
+
+}
+
+#pragma mark - Runtime Entry -
 
 + (void)load
 {
@@ -285,20 +414,21 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     }
 }
 
-+ (NSMutableDictionary *)sharedSchema
-{
-    static dispatch_once_t onceToken;
-    static NSMutableDictionary *_schema;
-    dispatch_once(&onceToken, ^{
-        _schema = [NSMutableDictionary dictionary];
-    });
-    return _schema;
-}
-
 #pragma mark - Subclass Overridable -
 
 + (nullable NSArray *)ignoredProperties { return nil; }
 + (nullable NSDictionary *)defaultPropertyValues { return nil; }
+
+#pragma mark - Static State -
++ (NSString *)instanceKeyNameWithIdentifier:(NSString *)identifier
+{
+    NSString *className = NSStringFromClass(self.class);
+    if (identifier.length == 0) {
+        return className;
+    }
+    
+    return [NSString stringWithFormat:@"%@.%@", className, identifier];
+}
 
 @end
 
