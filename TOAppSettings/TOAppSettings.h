@@ -10,32 +10,33 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(AppSettings)
 @interface TOAppSettings : NSObject
 
 /**
  Returns an instance of this settings class with the default configuration.
  This object is cached, so subsequent calls will return the same object.
  */
-+ (instancetype)defaultSettings;
++ (instancetype)defaultSettings NS_SWIFT_NAME(default());
 
 /**
  Returns an instance of this settings class with a unique identifier string.
  This is useful to creating subsequent copies of the same settings class, separate
  from the default settings.
  */
-+ (instancetype)settingsWithIdentifier:(nullable NSString *)identifier;
++ (instancetype)settingsWithIdentifier:(nullable NSString *)identifier NS_SWIFT_NAME(init(identifier:));
 
 /**
  Returns an instance of the settings class, with an app container suite name.
  Use this instance when you would like these settings to be shared by other apps
  in the same developer account. */
-+ (instancetype)defaultSettingsWithSuiteName:(nullable NSString *)suiteName;
++ (instancetype)defaultSettingsWithSuiteName:(nullable NSString *)suiteName NS_SWIFT_NAME(init(suiteName:));
 
 /**
  Returns an instance of this settings class with a unique identifier, and with
  an app suite name. Use this to create multiple copies of the same settings class
  and share it amongst apps in the same developer account. */
-+ (instancetype)settingsWithIdentifier:(nullable NSString *)identifier suiteName:(nullable NSString *)suiteName;
++ (instancetype)settingsWithIdentifier:(nullable NSString *)identifier suiteName:(nullable NSString *)suiteName NS_SWIFT_NAME(init(identifier:suiteName:));
 
 /**
  Init is disabled. Please use one of the above creation methods
