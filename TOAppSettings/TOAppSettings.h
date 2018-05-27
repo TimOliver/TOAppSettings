@@ -12,18 +12,41 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TOAppSettings : NSObject
 
-+ (TOAppSettings *)defaultSettings;
+/**
+ Returns an instance of this settings class with the default configuration.
+ This object is cached, so subsequent calls will return the same object.
+ */
++ (instancetype)defaultSettings;
 
-+ (TOAppSettings *)settingsWithIdentifier:(NSString *)identifier;
+/**
+ Returns an instance of this settings class with a unique identifier string.
+ This is useful to creating subsequent copies of the same settings class, separate
+ from the default settings.
+ */
++ (instancetype)settingsWithIdentifier:(nullable NSString *)identifier;
 
-+ (TOAppSettings *)defaultSettingsWithSuiteName:(NSString *)suiteName;
+/**
+ Returns an instance of the settings class, with an app container suite name.
+ Use this instance when you would like these settings to be shared by other apps
+ in the same developer account. */
++ (instancetype)defaultSettingsWithSuiteName:(nullable NSString *)suiteName;
 
-+ (TOAppSettings *)settingsWithIdentifier:(NSString *)identifier suiteName:(NSString *)suiteName;
+/**
+ Returns an instance of this settings class with a unique identifier, and with
+ an app suite name. Use this to create multiple copies of the same settings class
+ and share it amongst apps in the same developer account. */
++ (instancetype)settingsWithIdentifier:(nullable NSString *)identifier suiteName:(nullable NSString *)suiteName;
 
 /**
  Init is disabled. Please use one of the above creation methods
  */
 - (instancetype)init NS_UNAVAILABLE;
+
+/** The identifier of this settings instance. Will be `nil` for the default settings. */
+@property (nonatomic, copy, readonly) NSString *identifier;
+
+/** The app container suite name set for this settings instance. */
+@property (nonatomic, copy, readonly) NSString *suiteName;
 
 /**
  Override this method with an array of any property names
