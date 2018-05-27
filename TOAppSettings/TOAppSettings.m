@@ -7,7 +7,6 @@
 //
 
 #import "TOAppSettings.h"
-
 #import <objc/runtime.h>
 
 typedef NS_ENUM (NSInteger, TOAppSettingsDataType) {
@@ -42,7 +41,7 @@ typedef NS_ENUM (NSInteger, TOAppSettingsDataType) {
 
 /** Due to the time spent serializing them, `<NSCoding>` objects
     are cached in this object until they are unretained */
-@property (nonatomic, strong) NSMapTable *dataPropertyCache;
+@property (nonatomic, strong) NSCache *dataPropertyCache;
 
 /** A dispatch barrier used to manage writes to the data cache property */
 @property (nonatomic, copy) dispatch_queue_t dataCacheBarrierQueue;
@@ -597,7 +596,7 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 {
     if (self.dataPropertyCache == nil) {
         dispatch_sync(self.dataCacheBarrierQueue, ^{
-            self.dataPropertyCache = [NSMapTable strongToWeakObjectsMapTable];
+            self.dataPropertyCache = [[NSCache alloc] init];
         });
     }
     
