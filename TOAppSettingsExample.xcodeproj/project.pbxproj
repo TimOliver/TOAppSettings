@@ -14,7 +14,6 @@
 		22BF2403209FE58600416EC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22BF2401209FE58600416EC4 /* LaunchScreen.storyboard */; };
 		22BF2406209FE58600416EC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF2405209FE58600416EC4 /* main.m */; };
 		22BF240F209FE9C100416EC4 /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
-		22E8A83F20B46E9800FA0B15 /* TOAppSettingsProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E8A83E20B46E9800FA0B15 /* TOAppSettingsProperty.m */; };
 		22ED797220AC7BB700727598 /* MyAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ED797120AC7BB700727598 /* MyAppSettings.m */; };
 /* End PBXBuildFile section */
 
@@ -31,8 +30,6 @@
 		22BF2405209FE58600416EC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		22BF240D209FE9C100416EC4 /* TOAppSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOAppSettings.h; sourceTree = "<group>"; };
 		22BF240E209FE9C100416EC4 /* TOAppSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOAppSettings.m; sourceTree = "<group>"; };
-		22E8A83D20B46E9800FA0B15 /* TOAppSettingsProperty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOAppSettingsProperty.h; sourceTree = "<group>"; };
-		22E8A83E20B46E9800FA0B15 /* TOAppSettingsProperty.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOAppSettingsProperty.m; sourceTree = "<group>"; };
 		22ED797020AC7BB700727598 /* MyAppSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyAppSettings.h; sourceTree = "<group>"; };
 		22ED797120AC7BB700727598 /* MyAppSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyAppSettings.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,8 +85,6 @@
 			children = (
 				22BF240D209FE9C100416EC4 /* TOAppSettings.h */,
 				22BF240E209FE9C100416EC4 /* TOAppSettings.m */,
-				22E8A83D20B46E9800FA0B15 /* TOAppSettingsProperty.h */,
-				22E8A83E20B46E9800FA0B15 /* TOAppSettingsProperty.m */,
 			);
 			path = TOAppSettings;
 			sourceTree = "<group>";
@@ -173,7 +168,6 @@
 				22BF2406209FE58600416EC4 /* main.m in Sources */,
 				22ED797220AC7BB700727598 /* MyAppSettings.m in Sources */,
 				22BF23F8209FE58500416EC4 /* AppDelegate.m in Sources */,
-				22E8A83F20B46E9800FA0B15 /* TOAppSettingsProperty.m in Sources */,
 				22BF240F209FE9C100416EC4 /* TOAppSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

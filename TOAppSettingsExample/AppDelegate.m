@@ -20,6 +20,8 @@
    
     MyAppSettings *settings = [MyAppSettings defaultSettings];
     settings.integerProperty = 4;
+    settings.dateProperty = [NSDate date];
+    
     return YES;
 }
 

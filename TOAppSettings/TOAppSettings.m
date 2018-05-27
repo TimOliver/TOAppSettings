@@ -7,11 +7,56 @@
 //
 
 #import "TOAppSettings.h"
-#import "TOAppSettingsProperty.h"
 
 #import <objc/runtime.h>
 
-// ---
+typedef NS_ENUM (NSInteger, TOAppSettingsDataType) {
+    TOAppSettingsDataTypeUnknown,
+    TOAppSettingsDataTypeInt,
+    TOAppSettingsDataTypeFloat,
+    TOAppSettingsDataTypeDouble,
+    TOAppSettingsDataTypeBool,
+    TOAppSettingsDataTypeDate,
+    TOAppSettingsDataTypeString,
+    TOAppSettingsDataTypeData,
+    TOAppSettingsDataTypeArray,
+    TOAppSettingsDataTypeDictionary,
+    TOAppSettingsDataTypeObject
+};
+
+// -----------------------------------------------------------------------
+
+@interface TOAppSettings ()
+
+/** The user defaults that this class writes to */
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
+
+/** Internal redeclarations of the objects configuration */
+@property (nonatomic, copy, readwrite) NSString *identifier;
+@property (nonatomic, copy, readwrite) NSString *suiteName;
+
+/** When saved to the user defaults, every property name is
+ formatted with this string as a prefix. This ensures zero collisions
+ with any other settings managed by external code. */
+@property (nonatomic, copy) NSString *propertyKeyPrefix;
+
+/** Due to the time spent serializing them, `<NSCoding>` objects
+    are cached in this object until they are unretained */
+@property (nonatomic, strong) NSMapTable *dataPropertyCache;
+
+/** A dispatch barrier used to manage writes to the data cache property */
+@property (nonatomic, copy) dispatch_queue_t dataCacheBarrierQueue;
+
+/** Method name defines so they may be accessed from the C functions */
+- (NSString *)userDefaultsKeyNameForGetterSelector:(SEL)selector;
+- (NSString *)userDefaultsKeyNameForSetterSelector:(SEL)selector;
+
+- (id)cachedDecodedObjectForKey:(NSString *)key;
+- (void)setCachedDecodedObject:(id)object forKey:(NSString *)key;
+
+@end
+
+// -----------------------------------------------------------------------
 
 #pragma mark - Property Accessor Analysis -
 
@@ -43,6 +88,12 @@ static inline TOAppSettingsDataType TOAppSettingsDataTypeForProperty(const char 
     else if (strncmp(attributes + 3, "NSDictionary", 11) == 0) {
         return TOAppSettingsDataTypeDictionary;
     }
+    else if (strncmp(attributes + 3, "NSData", 6) == 0) {
+        return TOAppSettingsDataTypeData;
+    }
+    else if (strncmp(attributes + 3, "NSDate", 6) == 0) {
+        return TOAppSettingsDataTypeDate;
+    }
     
     // Return generic object
     return TOAppSettingsDataTypeObject;
@@ -57,10 +108,10 @@ static inline BOOL TOAppSettingsIsIgnoredProperty(const char *attributes)
     return NO;
 }
 
-static inline BOOL TOAppSettingsIsCompatibleObjectType(const char *attributes)
+static inline char *TOAppSettingsClassNameForPropertyAttributes(const char *attributes)
 {
     //Format is either '"'T@\"NSString\"" or '"T@\"<NSCoding>\""'
-    if (strlen(attributes) < 2 || attributes[1] != '@') { return NO; }
+    if (strlen(attributes) < 2 || attributes[1] != '@') { return NULL; }
     
     // Get the class/protocol name
     const char *start = strstr(attributes, "\"") + 1;
@@ -69,6 +120,14 @@ static inline BOOL TOAppSettingsIsCompatibleObjectType(const char *attributes)
     
     char *name = malloc(distance);
     strncpy(name, start, distance);
+    
+    return name;
+}
+
+static inline BOOL TOAppSettingsIsCompatibleObjectType(const char *attributes)
+{
+    char *name = TOAppSettingsClassNameForPropertyAttributes(attributes);
+    if (name == NULL) { return NO; }
     
     // Check if it is a generic object that conforms to the coding protocols
     if (strcmp(name, "<NSCoding>") == 0 || strcmp(name, "<NSSecureCoding>") == 0) {
@@ -101,42 +160,122 @@ static inline BOOL TOAppSettingsIsSubclass(Class class1, Class class2) {
 #pragma mark - Accessor Implementations -
 
 // Int
-static void setIntegerPropertyValue(id self, SEL _cmd, NSInteger intValue) {  }
-static NSInteger getIntegerPropertyValue(id self, SEL _cmd) { return 1; }
-
-// Float
-static void setFloatPropertyValue(id self, SEL _cmd, float floatValue) { }
-static float getFloatPropertyValue(id self, SEL _cmd) { return 1.0f; }
-
-//Double
-static void setDoublePropertyValue(id self, SEL _cmd, double doubleValue) { }
-static double getDoublePropertyValue(id self, SEL _cmd) { return 1.0f; }
-
-//Bool
-static void setBoolPropertyValue(id self, SEL _cmd, BOOL boolValue) { }
-static BOOL getBoolPropertyValue(id self, SEL _cmd) { return NO; }
-
-//String
-static void setStringPropertyValue(id self, SEL _cmd, NSString *stringValue) { }
-static NSString *getStringPropertyValue(id self, SEL _cmd) { return @""; }
-
-//Array
-static void setArrayPropertyValue(id self, SEL _cmd, NSArray *arrayValue) { }
-static NSArray *getArrayPropertyValue(id self, SEL _cmd) { return nil; }
-
-//Dictionary
-static void setDictionaryPropertyValue(id self, SEL _cmd, NSDictionary *dictionarrValue) { }
-static NSDictionary *getDictionaryPropertyValue(id self, SEL _cmd) { return nil; }
-
-//Object
-static void setObjectPropertyValue(id self, SEL _cmd, id object)
+static void setIntegerPropertyValue(TOAppSettings *self, SEL _cmd, NSInteger intValue)
 {
-    
+    [self.userDefaults setInteger:intValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
 }
 
-static id getObjectPropertyValue(id self, SEL _cmd)
+static NSInteger getIntegerPropertyValue(TOAppSettings *self, SEL _cmd)
 {
-    return nil;
+    return [self.userDefaults integerForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+// Float
+static void setFloatPropertyValue(TOAppSettings *self, SEL _cmd, float floatValue)
+{
+    [self.userDefaults setFloat:floatValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static float getFloatPropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults floatForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//Double
+static void setDoublePropertyValue(TOAppSettings *self, SEL _cmd, double doubleValue)
+{
+    [self.userDefaults setDouble:doubleValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static double getDoublePropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults doubleForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//Bool
+static void setBoolPropertyValue(TOAppSettings *self, SEL _cmd, BOOL boolValue)
+{
+    [self.userDefaults setBool:boolValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static BOOL getBoolPropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults boolForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//Date
+static void setDatePropertyValue(TOAppSettings *self, SEL _cmd, NSDate *dateValue)
+{
+    [self.userDefaults setObject:dateValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static NSDate *getDatePropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//String
+static void setStringPropertyValue(TOAppSettings *self, SEL _cmd, NSString *stringValue)
+{
+    [self.userDefaults setObject:stringValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static NSString *getStringPropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults stringForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//Data
+static void setDataPropertyValue(TOAppSettings *self, SEL _cmd, NSData *dataValue)
+{
+    [self.userDefaults setObject:dataValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static NSData *getDataPropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//Array
+static void setArrayPropertyValue(TOAppSettings *self, SEL _cmd, NSArray *arrayValue)
+{
+    [self.userDefaults setObject:arrayValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static NSArray *getArrayPropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//Dictionary
+static void setDictionaryPropertyValue(TOAppSettings *self, SEL _cmd, NSDictionary *dictionaryValue)
+{
+    [self.userDefaults setObject:dictionaryValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+}
+
+static NSDictionary *getDictionaryPropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
+}
+
+//Object
+static void setObjectPropertyValue(TOAppSettings *self, SEL _cmd, id object)
+{
+    NSString *key = [self userDefaultsKeyNameForSetterSelector:_cmd];
+    NSData *objectData = [NSKeyedArchiver archivedDataWithRootObject:object];
+    [self.userDefaults setObject:objectData forKey:key];
+    [self setCachedDecodedObject:object forKey:key];
+}
+
+static id getObjectPropertyValue(TOAppSettings *self, SEL _cmd)
+{
+    NSString *key = [self userDefaultsKeyNameForGetterSelector:_cmd];
+    id object = [self cachedDecodedObjectForKey:key];
+    if (object) { return object; }
+    
+    NSData *objectData = [self.userDefaults objectForKey:key];
+    if (objectData == nil) { return nil; }
+    return [NSKeyedUnarchiver unarchiveObjectWithData:objectData];
 }
 
 static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, const char *attributes, TOAppSettingsDataType type)
@@ -164,6 +303,14 @@ static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, co
         case TOAppSettingsDataTypeString:
             newGetter = (IMP)getStringPropertyValue;
             newSetter = (IMP)setStringPropertyValue;
+            break;
+        case TOAppSettingsDataTypeDate:
+            newGetter = (IMP)getDatePropertyValue;
+            newSetter = (IMP)setDatePropertyValue;
+            break;
+        case TOAppSettingsDataTypeData:
+            newGetter = (IMP)getDataPropertyValue;
+            newSetter = (IMP)setDataPropertyValue;
             break;
         case TOAppSettingsDataTypeArray:
             newGetter = (IMP)getArrayPropertyValue;
@@ -289,30 +436,12 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 // -----------------------------------------------------------------------
 
-@interface TOAppSettings ()
-
-/** The user defaults that this class writes to */
-@property (nonatomic, strong) NSUserDefaults *userDefaults;
-
-/** Internal redeclarations of the objects configuration */
-@property (nonatomic, copy, readwrite) NSString *identifier;
-@property (nonatomic, copy, readwrite) NSString *suiteName;
-
-/** When saved to the user defaults, every property name is
- formatted with this string as a prefix. This ensures zero collisions
- with any other settings managed by external code. */
-@property (nonatomic, copy) NSString *propertyKeyPrefix;
-
-@end
-
-// -----------------------------------------------------------------------
-
 @implementation TOAppSettings
 
 #pragma mark - Singleton Properties -
 
 /** A cache where previously created instances of the same
-    settings is persisted. */
+    settings objects are persisted. */
 + (NSCache *)sharedCache
 {
     static NSCache *_cache;
@@ -325,16 +454,16 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 /** Manages a dispatch queue that ensures the cache is
     accessed in a thread-safe manner */
- + (dispatch_queue_t)sharedSettingsCacheQueue
- {
-     static dispatch_queue_t _sharedSettingsQueue;
-     static dispatch_once_t onceToken;
-     dispatch_once(&onceToken, ^{
-         _sharedSettingsQueue = dispatch_queue_create("TOAppSettings.SharedSettingsBarrierQueue",
-                                                      DISPATCH_QUEUE_CONCURRENT);
-     });
-     return _sharedSettingsQueue;
- }
++ (dispatch_queue_t)sharedSettingsCacheQueue
+{
+    static dispatch_queue_t _sharedSettingsQueue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedSettingsQueue = dispatch_queue_create("TOAppSettings.SharedSettingsBarrierQueue",
+                                                  DISPATCH_QUEUE_CONCURRENT);
+    });
+    return _sharedSettingsQueue;
+}
 
 #pragma mark - Class Creation -
 + (instancetype)defaultSettings
@@ -383,6 +512,9 @@ static inline void TOAppSettingsRegisterSubclassProperties()
         _suiteName = suiteName;
         _identifier = identifier;
         
+        NSString *queueName = [NSString stringWithFormat:@"%@.DataObjectsCacheQueue", [self class]];
+        _dataCacheBarrierQueue = dispatch_queue_create(queueName.UTF8String, DISPATCH_QUEUE_CONCURRENT);
+        
         [self setUp];
     }
     
@@ -402,7 +534,6 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     // Generate the property prefix we'll be
     // using to uniquely identify the properties we manage
     self.propertyKeyPrefix = [[self class] instanceKeyNameWithIdentifier:_identifier];
-
 }
 
 #pragma mark - Runtime Entry -
@@ -419,7 +550,7 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 + (nullable NSArray *)ignoredProperties { return nil; }
 + (nullable NSDictionary *)defaultPropertyValues { return nil; }
 
-#pragma mark - Static State -
+#pragma mark - Static State Management -
 + (NSString *)instanceKeyNameWithIdentifier:(NSString *)identifier
 {
     NSString *className = NSStringFromClass(self.class);
@@ -428,6 +559,51 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     }
     
     return [NSString stringWithFormat:@"%@.%@", className, identifier];
+}
+
+#pragma mark - Dynamic Accessor Handling -
+- (NSString *)userDefaultsKeyNameForGetterSelector:(SEL)selector
+{
+    NSString *propertyName = NSStringFromSelector(selector);
+    //Capitalize only first character
+    propertyName = [NSString stringWithFormat:@"%@%@",
+                        [propertyName substringToIndex:1].capitalizedString,
+                        [propertyName substringFromIndex:1]];
+    return [self.propertyKeyPrefix stringByAppendingFormat:@".%@", propertyName];
+}
+
+- (NSString *)userDefaultsKeyNameForSetterSelector:(SEL)selector
+{
+    NSString *propertyName = NSStringFromSelector(selector);
+    //Drop the ":" at the end
+    propertyName = [propertyName substringToIndex:propertyName.length - 1];
+    //Remove the "set" at the beginning
+    propertyName = [propertyName substringFromIndex:3];
+    
+    return [self.propertyKeyPrefix stringByAppendingFormat:@".%@", propertyName];
+}
+
+- (id)cachedDecodedObjectForKey:(NSString *)key
+{
+    if (self.dataPropertyCache == nil) { return nil; }
+    __block id object = nil;
+    dispatch_sync(_dataCacheBarrierQueue, ^{
+        object = [self.dataPropertyCache objectForKey:key];
+    });
+    return object;
+}
+
+- (void)setCachedDecodedObject:(id)object forKey:(NSString *)key
+{
+    if (self.dataPropertyCache == nil) {
+        dispatch_sync(self.dataCacheBarrierQueue, ^{
+            self.dataPropertyCache = [NSMapTable strongToWeakObjectsMapTable];
+        });
+    }
+    
+    dispatch_barrier_async(self.dataCacheBarrierQueue, ^{
+        [self.dataPropertyCache setObject:object forKey:key];
+    });
 }
 
 @end
