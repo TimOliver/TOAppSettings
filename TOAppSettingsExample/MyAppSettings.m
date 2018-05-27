@@ -10,4 +10,14 @@
 
 @implementation MyAppSettings
 
+@dynamic boolProperty;
+@dynamic integerProperty;
+@dynamic floatProperty;
+@dynamic doubleProperty;
+@dynamic stringProperty;
+@dynamic dateProperty;
+@dynamic urlProperty;
+@dynamic arrayProperty;
+@dynamic dictionaryProperty;
+
 @end

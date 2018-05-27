@@ -19,8 +19,6 @@
 @property (nonatomic, copy) NSURL *urlProperty;
 @property (nonatomic, copy) NSArray<NSString *> *arrayProperty;
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> *dictionaryProperty;
-@property (nonatomic, strong) id<NSCoding> object;
-@property (nonatomic, strong) id<NSSecureCoding> secureObject;
 
 @property (nonatomic, readonly) NSString *readOnlyString;
 
