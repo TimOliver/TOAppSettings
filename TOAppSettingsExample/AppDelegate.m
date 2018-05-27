@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "MyAppSettings.h"
 
 @interface AppDelegate ()
 
@@ -16,7 +17,9 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+   
+    MyAppSettings *settings = [MyAppSettings defaultSettings];
+    settings.integerProperty = 4;
     return YES;
 }
 
