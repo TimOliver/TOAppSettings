@@ -41,14 +41,18 @@ typedef NS_ENUM (NSInteger, TOAppSettingsDataType) {
 
 /** Due to the time spent serializing them, `<NSCoding>` objects
     are cached in this object until they are unretained */
-@property (nonatomic, strong) NSCache *dataPropertyCache;
+@property (nonatomic, strong) NSMapTable *dataPropertyCache;
 
 /** A dispatch barrier used to manage writes to the data cache property */
 @property (nonatomic, copy) dispatch_queue_t dataCacheBarrierQueue;
 
-/** Method name defines so they may be accessed from the C functions */
+/** Works out the `NSUserDefaults` key name based off the setter/getter method names */
 - (NSString *)userDefaultsKeyNameForGetterSelector:(SEL)selector;
 - (NSString *)userDefaultsKeyNameForSetterSelector:(SEL)selector;
+
+/** Works out the property name from the name of the setter selector */
+- (NSString *)propertyNameForSetterSelector:(SEL)selector;
+- (NSString *)userDefaultsKeyNameForPropertyName:(NSString *)propertyName;
 
 - (id)cachedDecodedObjectForKey:(NSString *)key;
 - (void)setCachedDecodedObject:(id)object forKey:(NSString *)key;
@@ -161,7 +165,10 @@ static inline BOOL TOAppSettingsIsSubclass(Class class1, Class class2) {
 // Int
 static void setIntegerPropertyValue(TOAppSettings *self, SEL _cmd, NSInteger intValue)
 {
-    [self.userDefaults setInteger:intValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setInteger:intValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static NSInteger getIntegerPropertyValue(TOAppSettings *self, SEL _cmd)
@@ -172,7 +179,10 @@ static NSInteger getIntegerPropertyValue(TOAppSettings *self, SEL _cmd)
 // Float
 static void setFloatPropertyValue(TOAppSettings *self, SEL _cmd, float floatValue)
 {
-    [self.userDefaults setFloat:floatValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setFloat:floatValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static float getFloatPropertyValue(TOAppSettings *self, SEL _cmd)
@@ -183,7 +193,10 @@ static float getFloatPropertyValue(TOAppSettings *self, SEL _cmd)
 //Double
 static void setDoublePropertyValue(TOAppSettings *self, SEL _cmd, double doubleValue)
 {
-    [self.userDefaults setDouble:doubleValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setDouble:doubleValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static double getDoublePropertyValue(TOAppSettings *self, SEL _cmd)
@@ -194,7 +207,10 @@ static double getDoublePropertyValue(TOAppSettings *self, SEL _cmd)
 //Bool
 static void setBoolPropertyValue(TOAppSettings *self, SEL _cmd, BOOL boolValue)
 {
-    [self.userDefaults setBool:boolValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setBool:boolValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static BOOL getBoolPropertyValue(TOAppSettings *self, SEL _cmd)
@@ -205,7 +221,10 @@ static BOOL getBoolPropertyValue(TOAppSettings *self, SEL _cmd)
 //Date
 static void setDatePropertyValue(TOAppSettings *self, SEL _cmd, NSDate *dateValue)
 {
-    [self.userDefaults setObject:dateValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setObject:dateValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static NSDate *getDatePropertyValue(TOAppSettings *self, SEL _cmd)
@@ -216,7 +235,10 @@ static NSDate *getDatePropertyValue(TOAppSettings *self, SEL _cmd)
 //String
 static void setStringPropertyValue(TOAppSettings *self, SEL _cmd, NSString *stringValue)
 {
-    [self.userDefaults setObject:stringValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setObject:stringValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static NSString *getStringPropertyValue(TOAppSettings *self, SEL _cmd)
@@ -227,7 +249,10 @@ static NSString *getStringPropertyValue(TOAppSettings *self, SEL _cmd)
 //Data
 static void setDataPropertyValue(TOAppSettings *self, SEL _cmd, NSData *dataValue)
 {
-    [self.userDefaults setObject:dataValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setObject:dataValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static NSData *getDataPropertyValue(TOAppSettings *self, SEL _cmd)
@@ -238,7 +263,10 @@ static NSData *getDataPropertyValue(TOAppSettings *self, SEL _cmd)
 //Array
 static void setArrayPropertyValue(TOAppSettings *self, SEL _cmd, NSArray *arrayValue)
 {
-    [self.userDefaults setObject:arrayValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setObject:arrayValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static NSArray *getArrayPropertyValue(TOAppSettings *self, SEL _cmd)
@@ -249,7 +277,10 @@ static NSArray *getArrayPropertyValue(TOAppSettings *self, SEL _cmd)
 //Dictionary
 static void setDictionaryPropertyValue(TOAppSettings *self, SEL _cmd, NSDictionary *dictionaryValue)
 {
-    [self.userDefaults setObject:dictionaryValue forKey:[self userDefaultsKeyNameForSetterSelector:_cmd]];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    [self willChangeValueForKey:propertyName];
+    [self.userDefaults setObject:dictionaryValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self didChangeValueForKey:propertyName];
 }
 
 static NSDictionary *getDictionaryPropertyValue(TOAppSettings *self, SEL _cmd)
@@ -260,9 +291,12 @@ static NSDictionary *getDictionaryPropertyValue(TOAppSettings *self, SEL _cmd)
 //Object
 static void setObjectPropertyValue(TOAppSettings *self, SEL _cmd, id object)
 {
-    NSString *key = [self userDefaultsKeyNameForSetterSelector:_cmd];
+    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
+    NSString *key = [self userDefaultsKeyNameForPropertyName:propertyName];
+    [self willChangeValueForKey:propertyName];
     NSData *objectData = [NSKeyedArchiver archivedDataWithRootObject:object];
     [self.userDefaults setObject:objectData forKey:key];
+    [self didChangeValueForKey:propertyName];
     [self setCachedDecodedObject:object forKey:key];
 }
 
@@ -533,6 +567,29 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     // Generate the property prefix we'll be
     // using to uniquely identify the properties we manage
     self.propertyKeyPrefix = [[self class] instanceKeyNameWithIdentifier:_identifier];
+    
+    // If this is the first time of execution, pre-populate NSUserDefaults with any
+    // desired default properties.
+    [self registerDefaultSettings];
+}
+
+- (void)registerDefaultSettings
+{
+    // Check if we have any default settings to apply
+    NSDictionary *defaultSettings = [[self class] defaultPropertyValues];
+    if (defaultSettings.allKeys.count == 0) { return; }
+    
+    // Check if there are any keys with our prefix already present (If there are, we've already done this)
+    NSString *keyPrefix = self.propertyKeyPrefix;
+    NSArray *keys = [NSUserDefaults standardUserDefaults].dictionaryRepresentation.allKeys;
+    for (NSString *key in keys) {
+        if ([key hasPrefix:keyPrefix]) { return; }
+    }
+    
+    // Register each setting
+    for (NSString *key in defaultSettings.allKeys) {
+        [self setValue:defaultSettings[key] forKey:key];
+    }
 }
 
 #pragma mark - Runtime Entry -
@@ -582,6 +639,32 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     return [self.propertyKeyPrefix stringByAppendingFormat:@".%@", propertyName];
 }
 
+- (NSString *)propertyNameForSetterSelector:(SEL)selector
+{
+    NSString *propertyName = NSStringFromSelector(selector);
+    //Drop the ":" at the end
+    propertyName = [propertyName substringToIndex:propertyName.length - 1];
+    //Remove the "set" at the beginning
+    propertyName = [propertyName substringFromIndex:3];
+    //Make the first letter lowercase
+    propertyName = [NSString stringWithFormat:@"%@%@",
+                    [propertyName substringToIndex:1].lowercaseString,
+                    [propertyName substringFromIndex:1]];
+    
+    return propertyName;
+}
+
+- (NSString *)userDefaultsKeyNameForPropertyName:(NSString *)propertyName
+{
+    // Capitalize first letter
+    propertyName = [NSString stringWithFormat:@"%@%@",
+                    [propertyName substringToIndex:1].capitalizedString,
+                    [propertyName substringFromIndex:1]];
+    return [self.propertyKeyPrefix stringByAppendingFormat:@".%@", propertyName];
+}
+
+#pragma mark - NSCoder Decoded Object Caching -
+
 - (id)cachedDecodedObjectForKey:(NSString *)key
 {
     if (self.dataPropertyCache == nil) { return nil; }
@@ -596,7 +679,7 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 {
     if (self.dataPropertyCache == nil) {
         dispatch_sync(self.dataCacheBarrierQueue, ^{
-            self.dataPropertyCache = [[NSCache alloc] init];
+            self.dataPropertyCache = [NSMapTable strongToWeakObjectsMapTable];
         });
     }
     
