@@ -20,4 +20,9 @@
 @dynamic arrayProperty;
 @dynamic dictionaryProperty;
 
++ (NSDictionary *)defaultPropertyValues
+{
+    return @{@"boolProperty": @(YES)};
+}
+
 @end
