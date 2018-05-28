@@ -14,6 +14,8 @@ settings.greeting = "Hello World!"
 
 ```
 
+![TOAppSettings](screenshot.jpg)
+
 `NSUserDefaults` has been a staple component of iOS development ever since iPhoneOS 2.0. As convenient as the API is for persisting data, it's a rather finicky API to work with. Aside from the methods for reading and writing data being overly verbose, keeping track of the key names can also be tricky.
 
 `TOAppSettings` is a wrapper class designed to make working with `NSUserDefaults` significantly easier. It uses similar mechanisms to the [Realm](http://realm.io) iOS database in that it uses the Objective-C runtime to dynamically map its properties directly to the equivalent `NSUserDefaults` methods.
