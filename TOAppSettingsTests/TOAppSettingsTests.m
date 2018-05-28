@@ -21,7 +21,6 @@
 @property (nonatomic, strong) NSDictionary *voiceActors;
 @property (nonatomic, strong) NSData *portalGunFormula;
 @property (nonatomic, strong) UIColor *portalGunColor;
-
 @property (nonatomic, assign) BOOL isDrunk;
 
 @end
