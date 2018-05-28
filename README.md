@@ -14,7 +14,7 @@ settings.greeting = "Hello World!"
 
 ```
 
-![TOAppSettings](screenshot.jpg)
+![TOAppSettings](Screenshot.jpg)
 
 `NSUserDefaults` has been a staple component of iOS development ever since iPhoneOS 2.0. As convenient as the API is for persisting data, it's a rather finicky API to work with. Aside from the methods for reading and writing data being overly verbose, keeping track of the key names can also be tricky.
 
