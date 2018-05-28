@@ -218,20 +218,6 @@ static BOOL getBoolPropertyValue(TOAppSettings *self, SEL _cmd)
     return [self.userDefaults boolForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
 }
 
-//Date
-static void setDatePropertyValue(TOAppSettings *self, SEL _cmd, NSDate *dateValue)
-{
-    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
-    [self willChangeValueForKey:propertyName];
-    [self.userDefaults setObject:dateValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
-    [self didChangeValueForKey:propertyName];
-}
-
-static NSDate *getDatePropertyValue(TOAppSettings *self, SEL _cmd)
-{
-    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
-}
-
 //String
 static void setStringPropertyValue(TOAppSettings *self, SEL _cmd, NSString *stringValue)
 {
@@ -246,50 +232,22 @@ static NSString *getStringPropertyValue(TOAppSettings *self, SEL _cmd)
     return [self.userDefaults stringForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
 }
 
-//Data
-static void setDataPropertyValue(TOAppSettings *self, SEL _cmd, NSData *dataValue)
-{
-    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
-    [self willChangeValueForKey:propertyName];
-    [self.userDefaults setObject:dataValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
-    [self didChangeValueForKey:propertyName];
-}
-
-static NSData *getDataPropertyValue(TOAppSettings *self, SEL _cmd)
-{
-    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
-}
-
-//Array
-static void setArrayPropertyValue(TOAppSettings *self, SEL _cmd, NSArray *arrayValue)
-{
-    NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
-    [self willChangeValueForKey:propertyName];
-    [self.userDefaults setObject:arrayValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
-    [self didChangeValueForKey:propertyName];
-}
-
-static NSArray *getArrayPropertyValue(TOAppSettings *self, SEL _cmd)
-{
-    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
-}
-
 //Dictionary
-static void setDictionaryPropertyValue(TOAppSettings *self, SEL _cmd, NSDictionary *dictionaryValue)
+static void setObjectPropertyValue(TOAppSettings *self, SEL _cmd, id objectValue)
 {
     NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
     [self willChangeValueForKey:propertyName];
-    [self.userDefaults setObject:dictionaryValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
+    [self.userDefaults setObject:objectValue forKey:[self userDefaultsKeyNameForPropertyName:propertyName]];
     [self didChangeValueForKey:propertyName];
 }
 
-static NSDictionary *getDictionaryPropertyValue(TOAppSettings *self, SEL _cmd)
+static id getObjectPropertyValue(TOAppSettings *self, SEL _cmd)
 {
     return [self.userDefaults objectForKey:[self userDefaultsKeyNameForGetterSelector:_cmd]];
 }
 
 //Object
-static void setObjectPropertyValue(TOAppSettings *self, SEL _cmd, id object)
+static void setArchivableObjectPropertyValue(TOAppSettings *self, SEL _cmd, id object)
 {
     NSString *propertyName = [self propertyNameForSetterSelector:_cmd];
     NSString *key = [self userDefaultsKeyNameForPropertyName:propertyName];
@@ -300,7 +258,7 @@ static void setObjectPropertyValue(TOAppSettings *self, SEL _cmd, id object)
     [self setCachedDecodedObject:object forKey:key];
 }
 
-static id getObjectPropertyValue(TOAppSettings *self, SEL _cmd)
+static id getArchivableObjectPropertyValue(TOAppSettings *self, SEL _cmd)
 {
     NSString *key = [self userDefaultsKeyNameForGetterSelector:_cmd];
     id object = [self cachedDecodedObjectForKey:key];
@@ -338,24 +296,24 @@ static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, co
             newSetter = (IMP)setStringPropertyValue;
             break;
         case TOAppSettingsDataTypeDate:
-            newGetter = (IMP)getDatePropertyValue;
-            newSetter = (IMP)setDatePropertyValue;
-            break;
-        case TOAppSettingsDataTypeData:
-            newGetter = (IMP)getDataPropertyValue;
-            newSetter = (IMP)setDataPropertyValue;
-            break;
-        case TOAppSettingsDataTypeArray:
-            newGetter = (IMP)getArrayPropertyValue;
-            newSetter = (IMP)setArrayPropertyValue;
-            break;
-        case TOAppSettingsDataTypeDictionary:
-            newGetter = (IMP)getDictionaryPropertyValue;
-            newSetter = (IMP)setDictionaryPropertyValue;
-            break;
-        case TOAppSettingsDataTypeObject:
             newGetter = (IMP)getObjectPropertyValue;
             newSetter = (IMP)setObjectPropertyValue;
+            break;
+        case TOAppSettingsDataTypeData:
+            newGetter = (IMP)getObjectPropertyValue;
+            newSetter = (IMP)setObjectPropertyValue;
+            break;
+        case TOAppSettingsDataTypeArray:
+            newGetter = (IMP)getObjectPropertyValue;
+            newSetter = (IMP)setObjectPropertyValue;
+            break;
+        case TOAppSettingsDataTypeDictionary:
+            newGetter = (IMP)getObjectPropertyValue;
+            newSetter = (IMP)setObjectPropertyValue;
+            break;
+        case TOAppSettingsDataTypeObject:
+            newGetter = (IMP)getArchivableObjectPropertyValue;
+            newSetter = (IMP)setArchivableObjectPropertyValue;
             break;
         default:
             break;
@@ -529,7 +487,7 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     if (settingsObject) { return settingsObject; }
     
     // Create a new instance and cache it
-    settingsObject = [[self alloc] initWithIdentifier:identifier suiteName:suiteName];
+    settingsObject = [[self.class alloc] initWithIdentifier:identifier suiteName:suiteName];
     
     // Save the instance to the cache
     dispatch_barrier_async(barrierQueue, ^{
@@ -590,6 +548,87 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     for (NSString *key in defaultSettings.allKeys) {
         [self setValue:defaultSettings[key] forKey:key];
     }
+}
+
+#pragma mark - KVC Compliance -
+
+- (id)objectForKeyedSubscript:(NSString *)key
+{
+    return [self valueForKey:key];
+}
+
+- (void)setObject:(id)obj forKeyedSubscript:(NSString *)key
+{
+    [self setValue:obj forKey:key];
+}
+
+- (void)setValue:(id)value forKey:(NSString *)key
+{
+    // If it's a property we don't manage, defer to the super class
+    if ([self isIgnoredProperty:key]) {
+        [super setValue:value forKey:key];
+        return;
+    }
+    
+    // Work out what type of object this is from the schema
+    TOAppSettingsDataType type = [self typeForPropertyWithName:key];
+    if (type == TOAppSettingsDataTypeUnknown) {
+        [super setValue:value forKey:key];
+        return;
+    }
+    
+    NSString *userDefaultsKey = [self userDefaultsKeyNameForPropertyName:key];
+    
+    // Inform KVO the property is changing
+    [self willChangeValueForKey:key];
+    
+    // If an archivable object, encode it and cache it
+    if (type == TOAppSettingsDataTypeObject) {
+        NSData *objectData = [NSKeyedArchiver archivedDataWithRootObject:value];
+        [self.userDefaults setObject:objectData forKey:userDefaultsKey];
+        [self setCachedDecodedObject:value forKey:userDefaultsKey];
+    }
+    else {
+        [self.userDefaults setObject:value forKey:userDefaultsKey];
+    }
+    
+    // Inform KVO the key has changed
+    [self didChangeValueForKey:key];
+}
+
+- (id)valueForKey:(NSString *)key
+{
+    if ([self isIgnoredProperty:key]) {
+        return [super valueForKey:key];
+    }
+    
+    // Work out what type of object this is from the schema
+    TOAppSettingsDataType type = [self typeForPropertyWithName:key];
+    if (type == TOAppSettingsDataTypeUnknown) {
+        return [super valueForKey:key];
+    }
+    
+    // If an archived object, forward it to the getter function
+    if (type == TOAppSettingsDataTypeObject) {
+        return getArchivableObjectPropertyValue(self, @selector(key));
+    }
+    
+    // Otherwise, get the value straight from NSUserDefaults
+    return [self.userDefaults objectForKey:[self userDefaultsKeyNameForPropertyName:key]];
+}
+
+- (BOOL)isIgnoredProperty:(NSString *)property
+{
+    NSArray *ignoredProperties = [[self class] ignoredProperties];
+    return (ignoredProperties.count && [ignoredProperties indexOfObject:property] != NSNotFound);
+}
+
+- (TOAppSettingsDataType)typeForPropertyWithName:(NSString *)propertyName
+{
+    objc_property_t property = class_getProperty([self class], propertyName.UTF8String);
+    if (property == NULL) { return TOAppSettingsDataTypeUnknown; }
+    
+    return TOAppSettingsDataTypeForProperty(property_getAttributes(property));
 }
 
 #pragma mark - Runtime Entry -
