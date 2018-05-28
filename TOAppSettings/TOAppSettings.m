@@ -663,6 +663,15 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 + (NSString *)instanceKeyNameWithIdentifier:(NSString *)identifier
 {
     NSString *className = NSStringFromClass(self.class);
+    
+    // Swift classes namespace their names with the product name.
+    // That's not necessary here, so strip it out
+    NSRange range = [className rangeOfString:@"."];
+    if (range.location != NSNotFound) {
+        className = [className substringFromIndex:range.location + 1];
+    }
+
+    // If this instance doesn't have an identifier, just return the class name
     if (identifier.length == 0) {
         return className;
     }

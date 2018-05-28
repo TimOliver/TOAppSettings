@@ -7,32 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		22BF23F8209FE58500416EC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF23F7209FE58500416EC4 /* AppDelegate.m */; };
-		22BF2403209FE58600416EC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22BF2401209FE58600416EC4 /* LaunchScreen.storyboard */; };
-		22BF2406209FE58600416EC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF2405209FE58600416EC4 /* main.m */; };
-		22BF240F209FE9C100416EC4 /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
 		22C6AA6620BC268B008723DA /* TOAppSettingsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C6AA6520BC268B008723DA /* TOAppSettingsTests.m */; };
 		22C6AA6D20BC272E008723DA /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
 		22C6AA7020BC3318008723DA /* TOAppSettingsSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C6AA6F20BC3318008723DA /* TOAppSettingsSwiftTests.swift */; };
+		22C6AA7820BC53DD008723DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C6AA7720BC53DD008723DA /* AppDelegate.swift */; };
+		22C6AA8220BC53DE008723DA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22C6AA8020BC53DE008723DA /* LaunchScreen.storyboard */; };
+		22C6AA8720BC54CE008723DA /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		22C6AA6820BC268B008723DA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22BF23EB209FE58500416EC4 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 22BF23F2209FE58500416EC4;
-			remoteInfo = TOAppSettingsExample;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		22BF23F3209FE58500416EC4 /* TOAppSettingsExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TOAppSettingsExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		22BF23F6209FE58500416EC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		22BF23F7209FE58500416EC4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		22BF2402209FE58600416EC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		22BF2404209FE58600416EC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		22BF2405209FE58600416EC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		22BF240D209FE9C100416EC4 /* TOAppSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOAppSettings.h; sourceTree = "<group>"; };
 		22BF240E209FE9C100416EC4 /* TOAppSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOAppSettings.m; sourceTree = "<group>"; };
 		22C6AA6320BC268B008723DA /* TOAppSettingsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TOAppSettingsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -40,17 +23,22 @@
 		22C6AA6720BC268B008723DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22C6AA6E20BC3318008723DA /* TOAppSettingsTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TOAppSettingsTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		22C6AA6F20BC3318008723DA /* TOAppSettingsSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOAppSettingsSwiftTests.swift; sourceTree = "<group>"; };
+		22C6AA7520BC53DC008723DA /* TOAppSettingsExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TOAppSettingsExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		22C6AA7720BC53DD008723DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		22C6AA8120BC53DE008723DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		22C6AA8320BC53DE008723DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		22C6AA8820BC5539008723DA /* TOAppSettingsExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TOAppSettingsExample-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		22BF23F0209FE58500416EC4 /* Frameworks */ = {
+		22C6AA6020BC268B008723DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		22C6AA6020BC268B008723DA /* Frameworks */ = {
+		22C6AA7220BC53DC008723DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -64,8 +52,8 @@
 			isa = PBXGroup;
 			children = (
 				22BF240C209FE9B100416EC4 /* TOAppSettings */,
-				22BF23F5209FE58500416EC4 /* TOAppSettingsExample */,
 				22C6AA6420BC268B008723DA /* TOAppSettingsTests */,
+				22C6AA7620BC53DD008723DA /* TOAppSettingsExample */,
 				22BF23F4209FE58500416EC4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,22 +61,10 @@
 		22BF23F4209FE58500416EC4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				22BF23F3209FE58500416EC4 /* TOAppSettingsExample.app */,
 				22C6AA6320BC268B008723DA /* TOAppSettingsTests.xctest */,
+				22C6AA7520BC53DC008723DA /* TOAppSettingsExample.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		22BF23F5209FE58500416EC4 /* TOAppSettingsExample */ = {
-			isa = PBXGroup;
-			children = (
-				22BF23F6209FE58500416EC4 /* AppDelegate.h */,
-				22BF23F7209FE58500416EC4 /* AppDelegate.m */,
-				22BF2401209FE58600416EC4 /* LaunchScreen.storyboard */,
-				22BF2404209FE58600416EC4 /* Info.plist */,
-				22BF2405209FE58600416EC4 /* main.m */,
-			);
-			path = TOAppSettingsExample;
 			sourceTree = "<group>";
 		};
 		22BF240C209FE9B100416EC4 /* TOAppSettings */ = {
@@ -111,26 +87,20 @@
 			path = TOAppSettingsTests;
 			sourceTree = "<group>";
 		};
+		22C6AA7620BC53DD008723DA /* TOAppSettingsExample */ = {
+			isa = PBXGroup;
+			children = (
+				22C6AA7720BC53DD008723DA /* AppDelegate.swift */,
+				22C6AA8020BC53DE008723DA /* LaunchScreen.storyboard */,
+				22C6AA8320BC53DE008723DA /* Info.plist */,
+				22C6AA8820BC5539008723DA /* TOAppSettingsExample-Bridging-Header.h */,
+			);
+			path = TOAppSettingsExample;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		22BF23F2209FE58500416EC4 /* TOAppSettingsExample */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22BF2409209FE58600416EC4 /* Build configuration list for PBXNativeTarget "TOAppSettingsExample" */;
-			buildPhases = (
-				22BF23EF209FE58500416EC4 /* Sources */,
-				22BF23F0209FE58500416EC4 /* Frameworks */,
-				22BF23F1209FE58500416EC4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = TOAppSettingsExample;
-			productName = TOAppSettingsExample;
-			productReference = 22BF23F3209FE58500416EC4 /* TOAppSettingsExample.app */;
-			productType = "com.apple.product-type.application";
-		};
 		22C6AA6220BC268B008723DA /* TOAppSettingsTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C6AA6A20BC268B008723DA /* Build configuration list for PBXNativeTarget "TOAppSettingsTests" */;
@@ -142,12 +112,28 @@
 			buildRules = (
 			);
 			dependencies = (
-				22C6AA6920BC268B008723DA /* PBXTargetDependency */,
 			);
 			name = TOAppSettingsTests;
 			productName = TOAppSettingsTests;
 			productReference = 22C6AA6320BC268B008723DA /* TOAppSettingsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		22C6AA7420BC53DC008723DA /* TOAppSettingsExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22C6AA8420BC53DE008723DA /* Build configuration list for PBXNativeTarget "TOAppSettingsExample" */;
+			buildPhases = (
+				22C6AA7120BC53DC008723DA /* Sources */,
+				22C6AA7220BC53DC008723DA /* Frameworks */,
+				22C6AA7320BC53DC008723DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TOAppSettingsExample;
+			productName = TOAppSettingsExample;
+			productReference = 22C6AA7520BC53DC008723DA /* TOAppSettingsExample.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -155,21 +141,17 @@
 		22BF23EB209FE58500416EC4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0930;
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Tim Oliver";
 				TargetAttributes = {
-					22BF23F2209FE58500416EC4 = {
-						CreatedOnToolsVersion = 9.3;
-						SystemCapabilities = {
-							com.apple.iCloud = {
-								enabled = 0;
-							};
-						};
-					};
 					22C6AA6220BC268B008723DA = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 0930;
 						TestTargetID = 22BF23F2209FE58500416EC4;
+					};
+					22C6AA7420BC53DC008723DA = {
+						CreatedOnToolsVersion = 9.3;
 					};
 				};
 			};
@@ -186,21 +168,13 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				22BF23F2209FE58500416EC4 /* TOAppSettingsExample */,
 				22C6AA6220BC268B008723DA /* TOAppSettingsTests */,
+				22C6AA7420BC53DC008723DA /* TOAppSettingsExample */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		22BF23F1209FE58500416EC4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				22BF2403209FE58600416EC4 /* LaunchScreen.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		22C6AA6120BC268B008723DA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -208,19 +182,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		22BF23EF209FE58500416EC4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
+		22C6AA7320BC53DC008723DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22BF2406209FE58600416EC4 /* main.m in Sources */,
-				22BF23F8209FE58500416EC4 /* AppDelegate.m in Sources */,
-				22BF240F209FE9C100416EC4 /* TOAppSettings.m in Sources */,
+				22C6AA8220BC53DE008723DA /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
 		22C6AA5F20BC268B008723DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -231,21 +203,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		22C6AA7120BC53DC008723DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22C6AA7820BC53DD008723DA /* AppDelegate.swift in Sources */,
+				22C6AA8720BC54CE008723DA /* TOAppSettings.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		22C6AA6920BC268B008723DA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 22BF23F2209FE58500416EC4 /* TOAppSettingsExample */;
-			targetProxy = 22C6AA6820BC268B008723DA /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
-		22BF2401209FE58600416EC4 /* LaunchScreen.storyboard */ = {
+		22C6AA8020BC53DE008723DA /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				22BF2402209FE58600416EC4 /* Base */,
+				22C6AA8120BC53DE008723DA /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -363,38 +336,6 @@
 			};
 			name = Release;
 		};
-		22BF240A209FE58600416EC4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6LF3GMKZAB;
-				INFOPLIST_FILE = TOAppSettingsExample/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.timoliver.TOAppSettingsExample;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		22BF240B209FE58600416EC4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6LF3GMKZAB;
-				INFOPLIST_FILE = TOAppSettingsExample/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = net.timoliver.TOAppSettingsExample;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		22C6AA6B20BC268B008723DA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -440,6 +381,48 @@
 			};
 			name = Release;
 		};
+		22C6AA8520BC53DE008723DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6LF3GMKZAB;
+				INFOPLIST_FILE = TOAppSettingsExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.timoliver.TOAppSettingsExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "TOAppSettingsExample/TOAppSettingsExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		22C6AA8620BC53DE008723DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6LF3GMKZAB;
+				INFOPLIST_FILE = TOAppSettingsExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.timoliver.TOAppSettingsExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = "TOAppSettingsExample/TOAppSettingsExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -452,20 +435,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		22BF2409209FE58600416EC4 /* Build configuration list for PBXNativeTarget "TOAppSettingsExample" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				22BF240A209FE58600416EC4 /* Debug */,
-				22BF240B209FE58600416EC4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		22C6AA6A20BC268B008723DA /* Build configuration list for PBXNativeTarget "TOAppSettingsTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				22C6AA6B20BC268B008723DA /* Debug */,
 				22C6AA6C20BC268B008723DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22C6AA8420BC53DE008723DA /* Build configuration list for PBXNativeTarget "TOAppSettingsExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22C6AA8520BC53DE008723DA /* Debug */,
+				22C6AA8620BC53DE008723DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
