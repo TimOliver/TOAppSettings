@@ -51,13 +51,16 @@ NS_SWIFT_NAME(AppSettings)
 
 /**
  Override this method with an array of any property names
- that you do NOT wish to have persisted.
+ that will not be backed by `NSUserDefaults`. Because each
+ instance of this class is cached, you can reliably expect
  */
 + (nullable NSArray<NSString *> *)ignoredProperties;
 
 /**
- Override this method with any initial values that should
- be set when loaded for the first time.
+ Override this method with a dictionary of default values.
+ These will be applied the first time of execution when it
+ is detected that `NSUserDefaults` does not contain entries
+ for these keys.
  */
 + (nullable NSDictionary *)defaultPropertyValues;
 
