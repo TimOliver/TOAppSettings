@@ -17,12 +17,19 @@
 @property (nonatomic, assign) NSInteger age;
 @property (nonatomic, strong) NSDate *birthdate;
 @property (nonatomic, strong) NSArray *grandkids;
+@property (nonatomic, assign) float height;
+@property (nonatomic, strong) NSDictionary *voiceActors;
+@property (nonatomic, strong) NSData *portalGunFormula;
+@property (nonatomic, strong) UIColor *portalGunColor;
 
 @property (nonatomic, assign) BOOL isDrunk;
 
 @end
 
 @implementation TestSettings
+
+// Test swapping accessor methods vs adding them
+@dynamic isDrunk;
 
 + (NSDictionary *)defaultPropertyValues
 {
@@ -36,6 +43,8 @@
 @interface TOAppSettingsTests : XCTestCase
 
 @end
+
+// ---------------------------------------------------------------------------
 
 @implementation TOAppSettingsTests
 
@@ -54,10 +63,14 @@
     // Set initial object, set properties, then dealloc
     @autoreleasepool {
         TestSettings *settings = [TestSettings defaultSettings];
-        settings.name = @"Rick";
-        settings.age = 70;
-        settings.birthdate = [NSDate dateWithTimeIntervalSince1970:-241290000];
-        settings.grandkids = @[@"Morty", @"Summer"];
+        settings.name = @"Rick"; // String
+        settings.age = 70; // Int
+        settings.birthdate = [NSDate dateWithTimeIntervalSince1970:-241290000]; //NSDate
+        settings.grandkids = @[@"Morty", @"Summer"]; //NSArray
+        settings.height = 6.2f; // Float
+        settings.voiceActors = @{@"English": @"Justin Roiland"}; // NSDictionary
+        settings.portalGunFormula = [@"McDonald's Szechuan McNugget Sauce" dataUsingEncoding:NSUTF8StringEncoding]; // NSData
+        settings.portalGunColor = [UIColor colorWithRed:0.0f green:1.0f blue:0.0f alpha:1.0f]; // <NSCoding>
     }
     
     // Get a second copy of the same instance and compare data was successfully retrieved
@@ -66,6 +79,27 @@
     XCTAssert(settings.age == 70);
     XCTAssert([settings.birthdate isEqual:[NSDate dateWithTimeIntervalSince1970:-241290000]]);
     XCTAssert([settings.grandkids.firstObject isEqualToString:@"Morty"]);
+    XCTAssert([settings.voiceActors[@"English"] isEqualToString:@"Justin Roiland"]);
+    XCTAssert([[[NSString alloc] initWithData:settings.portalGunFormula encoding:NSUTF8StringEncoding] isEqualToString:@"McDonald's Szechuan McNugget Sauce"]);
+    XCTAssert([settings.portalGunColor isEqual:[UIColor colorWithRed:0.0f green:1.0f blue:0.0f alpha:1.0f]]);
+}
+
+// Test that two separate copies of the same object can be saved
+- (void)testSeparateCopies
+{
+    @autoreleasepool {
+        TestSettings *rick = [TestSettings settingsWithIdentifier:@"Rick"];
+        rick.name = @"Rick";
+        
+        TestSettings *morty = [TestSettings settingsWithIdentifier:@"Morty"];
+        morty.name = @"Morty";
+    }
+    
+    TestSettings *rick = [TestSettings settingsWithIdentifier:@"Rick"];
+    TestSettings *morty = [TestSettings settingsWithIdentifier:@"Morty"];
+    
+    XCTAssert([rick.name isEqualToString:@"Rick"]);
+    XCTAssert([morty.name isEqualToString:@"Morty"]);
 }
 
 // Test that the caching mechanism is ensuring that the same instance is returned on each call
