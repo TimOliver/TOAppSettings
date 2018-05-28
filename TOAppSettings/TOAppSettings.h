@@ -76,7 +76,7 @@ NS_SWIFT_NAME(AppSettings)
  is detected that `NSUserDefaults` does not contain entries
  for these keys.
  */
-+ (nullable NSDictionary *)defaultPropertyValues;
++ (nullable NSDictionary<NSString *, id> *)defaultPropertyValues;
 
 /**
  :nodoc:
