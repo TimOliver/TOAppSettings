@@ -7,6 +7,17 @@
 //
 
 #import "AppDelegate.h"
+#import "TOAppSettings.h"
+
+@interface MyAppSettings: TOAppSettings
+
+@end
+
+//---
+
+@implementation MyAppSettings
+
+@end
 
 @implementation AppDelegate
 
