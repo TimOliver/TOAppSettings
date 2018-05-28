@@ -64,6 +64,14 @@ NS_SWIFT_NAME(AppSettings)
  */
 + (nullable NSDictionary *)defaultPropertyValues;
 
+/**
+ :nodoc:
+ These method defines enable subscripting, where property
+ values can be set like an `NSDictionary`.
+ */
+- (id)objectForKeyedSubscript:(NSString *)key;
+- (void)setObject:(id)obj forKeyedSubscript:(NSString *)key;
+
 @end
 
 NS_ASSUME_NONNULL_END
