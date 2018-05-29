@@ -729,7 +729,6 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 - (id)cachedDecodedObjectForKey:(NSString *)key
 {
-    if (self.dataPropertyCache == nil) { return nil; }
     __block id object = nil;
     dispatch_sync(_dataCacheBarrierQueue, ^{
         object = [self.dataPropertyCache objectForKey:key];
@@ -739,13 +738,10 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 - (void)setCachedDecodedObject:(id)object forKey:(NSString *)key
 {
-    if (self.dataPropertyCache == nil) {
-        dispatch_sync(self.dataCacheBarrierQueue, ^{
-            self.dataPropertyCache = [NSMapTable strongToWeakObjectsMapTable];
-        });
-    }
-    
     dispatch_barrier_async(self.dataCacheBarrierQueue, ^{
+        if (self.dataPropertyCache == nil) {
+            self.dataPropertyCache = [NSMapTable strongToWeakObjectsMapTable];
+        }
         [self.dataPropertyCache setObject:object forKey:key];
     });
 }
