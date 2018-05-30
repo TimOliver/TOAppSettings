@@ -5,7 +5,7 @@ A Realm-like object wrapper class for `NSUserDefaults`.
 
 // Define a subclass with a list of properties
 class MyAppSettings: AppSettings {
-	@objc dynamic var greeting = ""
+    @objc dynamic var greeting = ""
 }
 
 // Automatically save to `NSUserDefaults`!
