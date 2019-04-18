@@ -551,16 +551,14 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     NSDictionary *defaultSettings = [[self class] defaultPropertyValues];
     if (defaultSettings.allKeys.count == 0) { return; }
     
-    // Check if there are any keys with our prefix already present (If there are, we've already done this)
-    NSString *keyPrefix = self.propertyKeyPrefix;
-    NSArray *keys = [NSUserDefaults standardUserDefaults].dictionaryRepresentation.allKeys;
-    for (NSString *key in keys) {
-        if ([key hasPrefix:keyPrefix]) { return; }
-    }
+	NSArray *keys = [NSUserDefaults standardUserDefaults].dictionaryRepresentation.allKeys;
     
     // Register each setting
     for (NSString *key in defaultSettings.allKeys) {
-        [self setValue:defaultSettings[key] forKey:key];
+		
+		// Check if the NSUserDefaults not contains the key then we register the default value
+		if (![keys containsObject:key])
+        	[self setValue:defaultSettings[key] forKey:key];
     }
 }
 

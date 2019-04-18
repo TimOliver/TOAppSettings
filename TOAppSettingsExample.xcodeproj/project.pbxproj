@@ -15,6 +15,16 @@
 		22C6AA8720BC54CE008723DA /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B1CD414A22674C0500BE4C00 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22BF23EB209FE58500416EC4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22C6AA7420BC53DC008723DA;
+			remoteInfo = TOAppSettingsExample;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		22BF240D209FE9C100416EC4 /* TOAppSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOAppSettings.h; sourceTree = "<group>"; };
 		22BF240E209FE9C100416EC4 /* TOAppSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOAppSettings.m; sourceTree = "<group>"; };
@@ -112,6 +122,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B1CD414B22674C0500BE4C00 /* PBXTargetDependency */,
 			);
 			name = TOAppSettingsTests;
 			productName = TOAppSettingsTests;
@@ -214,6 +225,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B1CD414B22674C0500BE4C00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22C6AA7420BC53DC008723DA /* TOAppSettingsExample */;
+			targetProxy = B1CD414A22674C0500BE4C00 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		22C6AA8020BC53DE008723DA /* LaunchScreen.storyboard */ = {
