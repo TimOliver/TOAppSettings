@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2271A49725937CFB00295B93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2271A49625937CFB00295B93 /* AppDelegate.swift */; };
+		2271A49925937CFC00295B93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2271A49825937CFC00295B93 /* Assets.xcassets */; };
+		2271A49C25937CFC00295B93 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2271A49A25937CFC00295B93 /* MainMenu.xib */; };
+		2271A4A525937D3100295B93 /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
 		22C6AA6620BC268B008723DA /* TOAppSettingsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C6AA6520BC268B008723DA /* TOAppSettingsTests.m */; };
 		22C6AA6D20BC272E008723DA /* TOAppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BF240E209FE9C100416EC4 /* TOAppSettings.m */; };
 		22C6AA7020BC3318008723DA /* TOAppSettingsSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C6AA6F20BC3318008723DA /* TOAppSettingsSwiftTests.swift */; };
@@ -26,6 +30,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2271A49425937CFB00295B93 /* TOAppSettingsMacExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TOAppSettingsMacExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2271A49625937CFB00295B93 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2271A49825937CFC00295B93 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2271A49B25937CFC00295B93 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2271A49D25937CFC00295B93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2271A49E25937CFC00295B93 /* TOAppSettingsMacExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TOAppSettingsMacExample.entitlements; sourceTree = "<group>"; };
+		2271A4A925937D5800295B93 /* TOAppSettingsMacExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TOAppSettingsMacExample-Bridging-Header.h"; sourceTree = "<group>"; };
 		22BF240D209FE9C100416EC4 /* TOAppSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TOAppSettings.h; sourceTree = "<group>"; };
 		22BF240E209FE9C100416EC4 /* TOAppSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TOAppSettings.m; sourceTree = "<group>"; };
 		22C6AA6320BC268B008723DA /* TOAppSettingsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TOAppSettingsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,6 +52,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2271A49125937CFB00295B93 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22C6AA6020BC268B008723DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -58,12 +76,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2271A49525937CFB00295B93 /* TOAppSettingsMacExample */ = {
+			isa = PBXGroup;
+			children = (
+				2271A49625937CFB00295B93 /* AppDelegate.swift */,
+				2271A49825937CFC00295B93 /* Assets.xcassets */,
+				2271A49A25937CFC00295B93 /* MainMenu.xib */,
+				2271A49D25937CFC00295B93 /* Info.plist */,
+				2271A49E25937CFC00295B93 /* TOAppSettingsMacExample.entitlements */,
+				2271A4A925937D5800295B93 /* TOAppSettingsMacExample-Bridging-Header.h */,
+			);
+			path = TOAppSettingsMacExample;
+			sourceTree = "<group>";
+		};
 		22BF23EA209FE58500416EC4 = {
 			isa = PBXGroup;
 			children = (
 				22BF240C209FE9B100416EC4 /* TOAppSettings */,
 				22C6AA6420BC268B008723DA /* TOAppSettingsTests */,
 				22C6AA7620BC53DD008723DA /* TOAppSettingsExample */,
+				2271A49525937CFB00295B93 /* TOAppSettingsMacExample */,
 				22BF23F4209FE58500416EC4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,6 +105,7 @@
 			children = (
 				22C6AA6320BC268B008723DA /* TOAppSettingsTests.xctest */,
 				22C6AA7520BC53DC008723DA /* TOAppSettingsExample.app */,
+				2271A49425937CFB00295B93 /* TOAppSettingsMacExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,6 +144,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2271A49325937CFB00295B93 /* TOAppSettingsMacExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2271A4A125937CFC00295B93 /* Build configuration list for PBXNativeTarget "TOAppSettingsMacExample" */;
+			buildPhases = (
+				2271A49025937CFB00295B93 /* Sources */,
+				2271A49125937CFB00295B93 /* Frameworks */,
+				2271A49225937CFB00295B93 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TOAppSettingsMacExample;
+			productName = TOAppSettingsMacExample;
+			productReference = 2271A49425937CFB00295B93 /* TOAppSettingsMacExample.app */;
+			productType = "com.apple.product-type.application";
+		};
 		22C6AA6220BC268B008723DA /* TOAppSettingsTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C6AA6A20BC268B008723DA /* Build configuration list for PBXNativeTarget "TOAppSettingsTests" */;
@@ -152,10 +202,13 @@
 		22BF23EB209FE58500416EC4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0930;
+				LastSwiftUpdateCheck = 1230;
 				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = "Tim Oliver";
 				TargetAttributes = {
+					2271A49325937CFB00295B93 = {
+						CreatedOnToolsVersion = 12.3;
+					};
 					22C6AA6220BC268B008723DA = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 1000;
@@ -182,11 +235,21 @@
 			targets = (
 				22C6AA6220BC268B008723DA /* TOAppSettingsTests */,
 				22C6AA7420BC53DC008723DA /* TOAppSettingsExample */,
+				2271A49325937CFB00295B93 /* TOAppSettingsMacExample */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2271A49225937CFB00295B93 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2271A49925937CFC00295B93 /* Assets.xcassets in Resources */,
+				2271A49C25937CFC00295B93 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22C6AA6120BC268B008723DA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -205,6 +268,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2271A49025937CFB00295B93 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2271A49725937CFB00295B93 /* AppDelegate.swift in Sources */,
+				2271A4A525937D3100295B93 /* TOAppSettings.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22C6AA5F20BC268B008723DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -235,6 +307,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		2271A49A25937CFC00295B93 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2271A49B25937CFC00295B93 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 		22C6AA8020BC53DE008723DA /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -246,6 +326,60 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		2271A49F25937CFC00295B93 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TOAppSettingsMacExample/TOAppSettingsMacExample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6LF3GMKZAB;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = TOAppSettingsMacExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.tim.TOAppSettingsMacExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "TOAppSettingsMacExample/TOAppSettingsMacExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2271A4A025937CFC00295B93 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TOAppSettingsMacExample/TOAppSettingsMacExample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6LF3GMKZAB;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = TOAppSettingsMacExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.tim.TOAppSettingsMacExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "TOAppSettingsMacExample/TOAppSettingsMacExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		22BF2407209FE58600416EC4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -453,6 +587,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2271A4A125937CFC00295B93 /* Build configuration list for PBXNativeTarget "TOAppSettingsMacExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2271A49F25937CFC00295B93 /* Debug */,
+				2271A4A025937CFC00295B93 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		22BF23EE209FE58500416EC4 /* Build configuration list for PBXProject "TOAppSettingsExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
