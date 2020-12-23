@@ -163,17 +163,6 @@ static inline BOOL TOAppSettingsIsCompatibleObjectType(const char *attributes)
     return NO;
 }
 
-/*
- Checks if class A is a subclass of class B
- */
-static inline BOOL TOAppSettingsIsSubclass(Class class1, Class class2) {
-    while (class1) {
-        class1 = class_getSuperclass(class1);
-        if (class1 == class2) { return YES; }
-    }
-    return NO;
-}
-
 #pragma mark - Accessor Implementations -
 
 // Int
@@ -406,50 +395,6 @@ static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
     free(properties);
 }
 
-/*
-Get a C array of all of the classes visible to this executable.
-The array must be manually freed when finished.
-*/
-static inline Class *TOAppSettingsGetClassList(unsigned int *numClasses)
-{
-    unsigned int _numClasses = 0;
-    Class *_classes = NULL;
-    
-    // Get the number of classes in the current runtime
-    _numClasses = objc_getClassList(NULL, 0);
-    if (_numClasses == 0) { return NULL; }
-    
-    // Allocate enough memory to hold a list of each class
-    _classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * _numClasses);
-    
-    // Copy the class list to our memory
-    _numClasses = objc_getClassList(_classes, _numClasses);
-    
-    // Expose the number of classes found to the external reference
-    if (numClasses != NULL) {
-        *numClasses = _numClasses;
-    }
-    
-    return _classes;
-}
-
-static inline void TOAppSettingsRegisterSubclassProperties()
-{
-    // Get a list of all classes
-    unsigned int numClasses = 0;
-    Class *classes = TOAppSettingsGetClassList(&numClasses);
-    if (numClasses == 0) { return; }
-    
-    // Loop through each class and find ones that are subclasses of this one
-    for (NSInteger i = 0; i < numClasses; i++) {
-        if (TOAppSettingsIsSubclass(classes[i], TOAppSettings.class) == NO) { continue; }
-        
-        // Perform the internal accessor swizzling
-        TOAppSettingsSwapClassPropertyAccessors(classes[i]);
-    }
-    free(classes);
-}
-
 // -----------------------------------------------------------------------
 
 @implementation TOAppSettings
@@ -524,6 +469,9 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 - (instancetype)initWithIdentifier:(nullable NSString *)identifier suiteName:(nullable NSString *)suiteName
 {
+    // Before first init, perform an Objective-C runtime swap of all of this classes properties
+    TOAppSettingsSwapClassPropertyAccessors(self.class);
+
     if (self = [super init]) {
         _suiteName = suiteName;
         _identifier = identifier;
@@ -652,15 +600,6 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     if (property == NULL) { return TOAppSettingsDataTypeUnknown; }
     
     return TOAppSettingsDataTypeForProperty(property_getAttributes(property));
-}
-
-#pragma mark - Runtime Entry -
-
-+ (void)load
-{
-    @autoreleasepool {
-        TOAppSettingsRegisterSubclassProperties();
-    }
 }
 
 #pragma mark - Subclass Overridable -
