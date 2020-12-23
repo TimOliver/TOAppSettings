@@ -403,12 +403,14 @@ static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
 
 /** A cache where previously created instances of the same
     settings objects are persisted. */
-+ (NSCache *)sharedCache
++ (NSMapTable *)sharedCache
 {
-    static NSCache *_cache;
+    static NSMapTable *_cache;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _cache = [[NSCache alloc] init];
+        _cache = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsCopyIn
+                                           valueOptions:NSPointerFunctionsWeakMemory
+                                               capacity:0];
     });
     return _cache;
 }
