@@ -336,10 +336,21 @@ static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, co
     if (newGetter == NULL || newSetter == NULL) { return; }
     
     // Generate synthesized setter method name
-    NSString *setterName = [NSString stringWithFormat:@"set%@%@:", [[name substringToIndex:1] capitalizedString], [name substringFromIndex:1]];
-    
+    NSString *setterName = [NSString stringWithFormat:@"set%@%@:",
+                            [[name substringToIndex:1] capitalizedString],
+                            [name substringFromIndex:1]];
+
+    // Convert the string names to selectors
     SEL originalGetter = NSSelectorFromString(name);
     SEL originalSetter = NSSelectorFromString(setterName);
+
+    // Compare the current implementations and skip if they match with the new ones
+    // (Eg, we've already replaced these implementations)
+    IMP originalGetterImplementation = class_getMethodImplementation(class, originalGetter);
+    IMP originalSetterImpelemtation = class_getMethodImplementation(class, originalSetter);
+    if (originalGetterImplementation == newGetter && originalSetterImpelemtation == newSetter) {
+        return;
+    }
 
     // If the class already has that selector, replace it.
     // Otherwise, add as a new method
