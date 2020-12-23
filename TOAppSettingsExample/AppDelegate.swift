@@ -74,7 +74,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UIViewController()
-        window?.rootViewController?.view.backgroundColor = .white
+        if #available(iOS 13.0, *) {
+            window?.rootViewController?.view.backgroundColor = .systemBackground
+        } else {
+            window?.rootViewController?.view.backgroundColor = .white
+        }
         window?.makeKeyAndVisible()
         
         demonstrateAppSettings()
