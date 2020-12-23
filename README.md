@@ -1,9 +1,9 @@
 # TOAppSettings
 
-[![CI](https://github.com/TimOliver/TOSegmentedControl/workflows/CI/badge.svg)](https://github.com/TimOliver/TOAppSettings/actions?query=workflow%3ACI)
-[![Version](https://img.shields.io/cocoapods/v/TOSegmentedControl.svg?style=flat)](http://cocoadocs.org/docsets/TOAppSettings)
+[![CI](https://github.com/TimOliver/TOAppSettings/workflows/CI/badge.svg)](https://github.com/TimOliver/TOAppSettings/actions?query=workflow%3ACI)
+[![Version](https://img.shields.io/cocoapods/v/TOAppSettings.svg?style=flat)](http://cocoadocs.org/docsets/TOAppSettings)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/TimOliver/TOAppSettings/master/LICENSE)
-[![Platform](https://img.shields.io/cocoapods/p/TOSegmentedControl.svg?style=flat)](http://cocoadocs.org/docsets/TOAppSettings)
+[![Platform](https://img.shields.io/cocoapods/p/TOAppSettings.svg?style=flat)](http://cocoadocs.org/docsets/TOAppSettings)
 
 A Realm-like object wrapper class for `NSUserDefaults`.
 
