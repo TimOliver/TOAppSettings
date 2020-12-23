@@ -1,7 +1,7 @@
 //
 //  TOAppSettings.m
 //
-//  Copyright 2018 Timothy Oliver. All rights reserved.
+//  Copyright 2018-2020 Timothy Oliver. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -340,7 +340,7 @@ static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, co
     
     SEL originalGetter = NSSelectorFromString(name);
     SEL originalSetter = NSSelectorFromString(setterName);
-    
+
     // If the class already has that selector, replace it.
     // Otherwise, add as a new method
     if ([class instancesRespondToSelector:originalGetter]) {
