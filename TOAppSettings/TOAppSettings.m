@@ -1,7 +1,7 @@
 //
 //  TOAppSettings.m
 //
-//  Copyright 2018 Timothy Oliver. All rights reserved.
+//  Copyright 2018-2020 Timothy Oliver. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -160,17 +160,6 @@ static inline BOOL TOAppSettingsIsCompatibleObjectType(const char *attributes)
         return YES;
     }
 
-    return NO;
-}
-
-/*
- Checks if class A is a subclass of class B
- */
-static inline BOOL TOAppSettingsIsSubclass(Class class1, Class class2) {
-    while (class1) {
-        class1 = class_getSuperclass(class1);
-        if (class1 == class2) { return YES; }
-    }
     return NO;
 }
 
@@ -336,11 +325,22 @@ static inline void TOAppSettingsReplaceAccessors(Class class, NSString *name, co
     if (newGetter == NULL || newSetter == NULL) { return; }
     
     // Generate synthesized setter method name
-    NSString *setterName = [NSString stringWithFormat:@"set%@%@:", [[name substringToIndex:1] capitalizedString], [name substringFromIndex:1]];
-    
+    NSString *setterName = [NSString stringWithFormat:@"set%@%@:",
+                            [[name substringToIndex:1] capitalizedString],
+                            [name substringFromIndex:1]];
+
+    // Convert the string names to selectors
     SEL originalGetter = NSSelectorFromString(name);
     SEL originalSetter = NSSelectorFromString(setterName);
-    
+
+    // Compare the current implementations and skip if they match with the new ones
+    // (Eg, we've already replaced these implementations)
+    IMP originalGetterImplementation = class_getMethodImplementation(class, originalGetter);
+    IMP originalSetterImpelemtation = class_getMethodImplementation(class, originalSetter);
+    if (originalGetterImplementation == newGetter && originalSetterImpelemtation == newSetter) {
+        return;
+    }
+
     // If the class already has that selector, replace it.
     // Otherwise, add as a new method
     if ([class instancesRespondToSelector:originalGetter]) {
@@ -395,50 +395,6 @@ static inline void TOAppSettingsSwapClassPropertyAccessors(Class class)
     free(properties);
 }
 
-/*
-Get a C array of all of the classes visible to this executable.
-The array must be manually freed when finished.
-*/
-static inline Class *TOAppSettingsGetClassList(unsigned int *numClasses)
-{
-    unsigned int _numClasses = 0;
-    Class *_classes = NULL;
-    
-    // Get the number of classes in the current runtime
-    _numClasses = objc_getClassList(NULL, 0);
-    if (_numClasses == 0) { return NULL; }
-    
-    // Allocate enough memory to hold a list of each class
-    _classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * _numClasses);
-    
-    // Copy the class list to our memory
-    _numClasses = objc_getClassList(_classes, _numClasses);
-    
-    // Expose the number of classes found to the external reference
-    if (numClasses != NULL) {
-        *numClasses = _numClasses;
-    }
-    
-    return _classes;
-}
-
-static inline void TOAppSettingsRegisterSubclassProperties()
-{
-    // Get a list of all classes
-    unsigned int numClasses = 0;
-    Class *classes = TOAppSettingsGetClassList(&numClasses);
-    if (numClasses == 0) { return; }
-    
-    // Loop through each class and find ones that are subclasses of this one
-    for (NSInteger i = 0; i < numClasses; i++) {
-        if (TOAppSettingsIsSubclass(classes[i], TOAppSettings.class) == NO) { continue; }
-        
-        // Perform the internal accessor swizzling
-        TOAppSettingsSwapClassPropertyAccessors(classes[i]);
-    }
-    free(classes);
-}
-
 // -----------------------------------------------------------------------
 
 @implementation TOAppSettings
@@ -447,12 +403,14 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 /** A cache where previously created instances of the same
     settings objects are persisted. */
-+ (NSCache *)sharedCache
++ (NSMapTable *)sharedCache
 {
-    static NSCache *_cache;
+    static NSMapTable *_cache;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _cache = [[NSCache alloc] init];
+        _cache = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsCopyIn
+                                           valueOptions:NSPointerFunctionsWeakMemory
+                                               capacity:0];
     });
     return _cache;
 }
@@ -513,6 +471,9 @@ static inline void TOAppSettingsRegisterSubclassProperties()
 
 - (instancetype)initWithIdentifier:(nullable NSString *)identifier suiteName:(nullable NSString *)suiteName
 {
+    // Before first init, perform an Objective-C runtime swap of all of this classes properties
+    TOAppSettingsSwapClassPropertyAccessors(self.class);
+
     if (self = [super init]) {
         _suiteName = suiteName;
         _identifier = identifier;
@@ -641,15 +602,6 @@ static inline void TOAppSettingsRegisterSubclassProperties()
     if (property == NULL) { return TOAppSettingsDataTypeUnknown; }
     
     return TOAppSettingsDataTypeForProperty(property_getAttributes(property));
-}
-
-#pragma mark - Runtime Entry -
-
-+ (void)load
-{
-    @autoreleasepool {
-        TOAppSettingsRegisterSubclassProperties();
-    }
 }
 
 #pragma mark - Subclass Overridable -

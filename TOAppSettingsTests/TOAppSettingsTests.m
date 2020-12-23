@@ -85,7 +85,7 @@
 
 - (void)testDefaultValueUpdate {
 	
-	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
 	// note: "className.ID.property"
 	
@@ -140,6 +140,25 @@
     TestSettings *first = [TestSettings defaultSettings];
     TestSettings *second = [TestSettings defaultSettings];
     XCTAssert(first == second);
+}
+
+// Test that if we create a settings object in an autoreleasepool
+- (void)testAutoreleaseCaching
+{
+    // Make a weak reference to the settings object
+    __weak TestSettings *weakSettings = nil;
+
+    // Make a new copy of the settings in an autoreleasepool,
+    // and save it to the weak reference
+    @autoreleasepool {
+        TestSettings *settings = [TestSettings defaultSettings];
+        weakSettings = settings;
+        settings = nil;
+    }
+
+    // At this point, after the autoreleasepool drained, the
+    // the weak reference should be nil
+    XCTAssertNil(weakSettings);
 }
 
 - (void)testDefaultPropertyValues
