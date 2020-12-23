@@ -156,6 +156,9 @@
         settings = nil;
     }
 
+    // Give the autoreleasepool plenty of time to drain
+    sleep(1);
+
     // At this point, after the autoreleasepool drained, the
     // the weak reference should be nil
     XCTAssertNil(weakSettings);
