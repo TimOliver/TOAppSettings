@@ -56,4 +56,4 @@ Please file a PR. :)
 
 
 ## License
-TOCropViewController is licensed under the MIT License, please see the [LICENSE](LICENSE) file. 
+`TOAppSettings` is licensed under the MIT License, please see the [LICENSE](LICENSE) file. 
